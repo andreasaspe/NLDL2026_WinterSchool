@@ -1,0 +1,16 @@
+{"time":"2025-11-27T15:24:33.843287222+01:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/storage/code/3DCLIP/wandb/run-20251127_152433-s0fhxk9j/logs/debug-core.log"}
+{"time":"2025-11-27T15:24:34.14194302+01:00","level":"INFO","msg":"created new stream","id":"s0fhxk9j"}
+{"time":"2025-11-27T15:24:34.141988064+01:00","level":"INFO","msg":"stream: started","id":"s0fhxk9j"}
+{"time":"2025-11-27T15:24:34.142022198+01:00","level":"INFO","msg":"handler: started","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T15:24:34.142021036+01:00","level":"INFO","msg":"writer: Do: started","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T15:24:34.142052084+01:00","level":"INFO","msg":"sender: started","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T15:24:34.560925586+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-11-27T17:21:20.321688364+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/bjonze/CLIP3D/s0fhxk9j/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
+{"time":"2025-11-27T19:35:56.328931063+01:00","level":"INFO","msg":"stream: closing","id":"s0fhxk9j"}
+{"time":"2025-11-27T19:35:56.328962362+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-11-27T19:35:56.32900918+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-11-27T19:35:57.163594614+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-11-27T19:35:57.481518642+01:00","level":"INFO","msg":"handler: closed","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T19:35:57.48156534+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T19:35:57.481568796+01:00","level":"INFO","msg":"sender: closed","stream_id":"s0fhxk9j"}
+{"time":"2025-11-27T19:35:57.481660969+01:00","level":"INFO","msg":"stream: closed","id":"s0fhxk9j"}
