@@ -31,8 +31,10 @@ def predict_with_nn_unet_on_filelist():
     out_files = []
 
     for series in all_series:
-        in_files.append([os.path.join(input_data_folder, series + ".nii.gz")])
-        out_files.append(os.path.join(output_folder, series + "_pred.nii.gz"))
+        out_file = os.path.join(output_folder, series + "_pred.nii.gz")
+        if not os.path.exists(out_file):
+            in_files.append([os.path.join(input_data_folder, series + ".nii.gz")])
+            out_files.append(out_file)
 
     print(f"Initializing class")
     # instantiate the nnUNetPredictor
