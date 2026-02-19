@@ -14,7 +14,7 @@ from tqdm import tqdm
 def train():
     # Training settings
     save_every = 20  # Save model every 10 epochs
-    wandb_bool = True  # Set to True if you want to use Weights & Biases for logging
+    wandb_bool = False  # Set to True if you want to use Weights & Biases for logging
     epochs = 200
     batch_size = 32
     learning_rate = 1e-4
@@ -38,7 +38,7 @@ def train():
     ).to(device)
 
 
-    out_dir = "/data/Data/bjorn/models/clip3d/quantile_0.01_0.99/"
+    out_dir = "/data/awias/ecg-ct/models/clip3d/quantile_0.01_0.99/"
     data_dir = "/data/Data/cropped_laa128_64mm/masks"
     json_dir_tr = "/data/Data/laa_measures/train_0.01_0.99/quantile_normalized.json"
     json_dir_val = "/data/Data/laa_measures/test_0.01_0.99/quantile_normalized.json"
