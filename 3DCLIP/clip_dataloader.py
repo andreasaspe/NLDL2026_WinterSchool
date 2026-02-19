@@ -202,6 +202,84 @@ class clip3d_score_dataset(tio.SubjectsDataset):
         return super().__getitem__(idx)  # This returns a Subject!
 
 
+class clip3d_ecg_dataset(tio.SubjectsDataset):
+    """Dataset that pairs 3D masks with ECG features from a CSV file."""
+
+    EKG_KEYS = [
+        'R_PeakAmpl_I', 'R_PeakAmpl_II', 'R_PeakAmpl_III',
+        'R_PeakAmpl_aVF', 'R_PeakAmpl_aVR', 'R_PeakAmpl_aVL',
+        'R_PeakAmpl_V1', 'R_PeakAmpl_V2', 'R_PeakAmpl_V3',
+        'R_PeakAmpl_V4', 'R_PeakAmpl_V5', 'R_PeakAmpl_V6',
+        'Q_PeakAmpl_I', 'Q_PeakAmpl_II', 'Q_PeakAmpl_III',
+        'Q_PeakAmpl_aVF', 'Q_PeakAmpl_aVR', 'Q_PeakAmpl_aVL',
+        'Q_PeakAmpl_V1', 'Q_PeakAmpl_V2', 'Q_PeakAmpl_V3',
+        'Q_PeakAmpl_V4', 'Q_PeakAmpl_V5', 'Q_PeakAmpl_V6',
+        'S_PeakAmpl_I', 'S_PeakAmpl_II', 'S_PeakAmpl_III',
+        'S_PeakAmpl_aVF', 'S_PeakAmpl_aVR', 'S_PeakAmpl_aVL',
+        'S_PeakAmpl_V1', 'S_PeakAmpl_V2', 'S_PeakAmpl_V3',
+        'S_PeakAmpl_V4', 'S_PeakAmpl_V5', 'S_PeakAmpl_V6',
+        'AtrialRate', 'VentricularRate',
+    ] # Remove
+
+    def __init__(self, data_dir, csv_path, augment=False, train=True,
+                 val_frac=0.2, seed=42):
+        import pandas as pd
+
+        self.data_dir = data_dir
+        self.keys = self.EKG_KEYS
+
+        df = pd.read_csv(csv_path)
+
+        # Only keep rows whose mask file exists on disk
+        mask_files = set(os.listdir(data_dir))
+        df['mask_file'] = df['NIFTI'].apply(lambda x: x + '_labels.nii.gz')
+        df = df[df['mask_file'].isin(mask_files)].reset_index(drop=True)
+        print(f"Found {len(df)} subjects with both ECG data and mask files.")
+
+        # Train / val split (deterministic)
+        df = df.sample(frac=1, random_state=seed).reset_index(drop=True)
+        split_idx = int(len(df) * (1 - val_frac))
+        if train:
+            df = df.iloc[:split_idx].reset_index(drop=True)
+            print(f"Training set: {len(df)} subjects")
+        else:
+            df = df.iloc[split_idx:].reset_index(drop=True)
+            print(f"Validation set: {len(df)} subjects")
+
+        # Build subjects list
+        subjects = []
+        for _, row in df.iterrows():
+            mask_path = os.path.join(self.data_dir, row['mask_file'])
+            context = np.array([row[k] if pd.notna(row[k]) else 0.0
+                                for k in self.keys], dtype=np.float32)
+            subject = tio.Subject(
+                mask=tio.LabelMap(mask_path),
+                context=torch.from_numpy(context),
+            )
+            subjects.append(subject)
+
+        self.augment = augment
+        if augment:
+            self.transform = tio.Compose([
+                tio.RandomFlip(axes=(0, 1, 2), flip_probability=0.5),
+                tio.RandomAffine(
+                    scales=1,
+                    degrees=10,
+                    translation=5,
+                    isotropic=False,
+                    image_interpolation='nearest',
+                    p=0.5,
+                ),
+            ])
+        else:
+            self.transform = None
+
+        super().__init__(subjects, transform=self.transform)
+
+    def __getitem__(self, idx):
+        return super().__getitem__(idx)
+
+
 def load_results_from_json(input_path):
     try:
         with open(input_path, 'r') as f:
