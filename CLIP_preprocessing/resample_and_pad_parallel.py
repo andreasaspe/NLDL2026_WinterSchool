@@ -9,8 +9,8 @@ img_folder = "/storage/Data/DTU-CGPS-1/NIFTI"
 output_folder = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
 os.makedirs(output_folder, exist_ok=True)
 
-target_spacing = 0.5
-target_size = (320, 320, 320)
+target_spacing = 1.0
+target_size = (192, 192, 192)
 
 files = [f for f in os.listdir(mask_folder) if f.endswith("_EAT.nii.gz")]
 

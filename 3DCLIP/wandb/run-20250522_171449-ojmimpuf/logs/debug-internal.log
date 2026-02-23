@@ -1,7 +1,0 @@
-{"time":"2025-05-22T17:14:49.189845282+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.9","symlink path":"/storage/code/3DCLIP/wandb/run-20250522_171449-ojmimpuf/logs/debug-core.log"}
-{"time":"2025-05-22T17:14:49.477303595+02:00","level":"INFO","msg":"created new stream","id":"ojmimpuf"}
-{"time":"2025-05-22T17:14:49.477353418+02:00","level":"INFO","msg":"stream: started","id":"ojmimpuf"}
-{"time":"2025-05-22T17:14:49.477374588+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"ojmimpuf"}
-{"time":"2025-05-22T17:14:49.47742928+02:00","level":"INFO","msg":"sender: started","stream_id":"ojmimpuf"}
-{"time":"2025-05-22T17:14:49.477434971+02:00","level":"INFO","msg":"handler: started","stream_id":"ojmimpuf"}
-{"time":"2025-05-22T17:14:49.778571384+02:00","level":"INFO","msg":"Starting system monitor"}

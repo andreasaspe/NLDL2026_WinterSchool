@@ -16,7 +16,7 @@ from tqdm import tqdm
 def train():
     # Training settings
     save_every = 20
-    wandb_bool = False
+    wandb_bool = True
     epochs = 200
     batch_size = 32
     learning_rate = 1e-4
@@ -31,7 +31,7 @@ def train():
 
     # --- Model architecture ---
     embed_dim = 128
-    image_resolution = 320         # 256³ input (must be divisible by 32)
+    image_resolution = 192         # 192³ input (must be divisible by 32)
     vision_layers = (3, 4, 6, 3)
     vision_width = 64
 
@@ -62,11 +62,11 @@ def train():
 
     dl_tr = tio.SubjectsLoader(ds_tr,
                                batch_size=batch_size,
-                               num_workers=32,
+                               num_workers=0,
                                shuffle=True)
     dl_val = tio.SubjectsLoader(ds_val,
                                 batch_size=batch_size,
-                                num_workers=32,
+                                num_workers=0,
                                 shuffle=False)
 
     # --- Optimizer ---
@@ -79,7 +79,7 @@ def train():
     scaler = GradScaler()
 
     if wandb_bool:
-        wandb.init(project="CLIP3D-ECG", entity="Bjonze")
+        wandb.init(project="CLIP3D-ECG", entity="andreasaspe")
 
     total_loss = 0.0
     total_steps = 0

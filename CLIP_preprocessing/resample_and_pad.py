@@ -26,23 +26,12 @@ for filename in os.listdir(mask_folder):
 
     # Load mask
     mask_sitk = sitk.ReadImage(mask_path)
-    
-    # Get size
-    # size = mask_sitk.GetSize()
-    # print(f"Original size: {size}")
 
     mask_cropped_sitk = tools.crop_to_tighest_mask(mask_sitk)
-    
-    # Get size
-    # size = mask_cropped_sitk.GetSize()
-    # print(f"Cropped size: {size}")
 
     # Resample mask
     mask_resampled_sitk = tools.resample_to_isotropic_spacing(mask_cropped_sitk, spacing = target_spacing, interpolation='nearest')
 
-    # Get size
-    # size = mask_resampled_sitk.GetSize()
-    # print(f"Resampled size: {size}")
 
     size = mask_resampled_sitk.GetSize()
     if size[0] > target_size[0] or size[1] > target_size[1] or size[2] > target_size[2]:
