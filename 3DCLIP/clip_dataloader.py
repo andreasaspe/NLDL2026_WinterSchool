@@ -218,11 +218,10 @@ class clip3d_ecg_dataset(tio.SubjectsDataset):
         'S_PeakAmpl_aVF', 'S_PeakAmpl_aVR', 'S_PeakAmpl_aVL',
         'S_PeakAmpl_V1', 'S_PeakAmpl_V2', 'S_PeakAmpl_V3',
         'S_PeakAmpl_V4', 'S_PeakAmpl_V5', 'S_PeakAmpl_V6',
-        'AtrialRate', 'VentricularRate',
-    ] # Remove
+    ]
 
     def __init__(self, data_dir, csv_path, augment=False, train=True,
-                 val_frac=0.2, seed=42):
+                 val_frac=0.2, seed=42, mask_suffix='_EAT.nii.gz'):
         import pandas as pd
 
         self.data_dir = data_dir
@@ -232,7 +231,7 @@ class clip3d_ecg_dataset(tio.SubjectsDataset):
 
         # Only keep rows whose mask file exists on disk
         mask_files = set(os.listdir(data_dir))
-        df['mask_file'] = df['NIFTI'].apply(lambda x: x + '_labels.nii.gz')
+        df['mask_file'] = df['NIFTI'].apply(lambda x: x + mask_suffix)
         df = df[df['mask_file'].isin(mask_files)].reset_index(drop=True)
         print(f"Found {len(df)} subjects with both ECG data and mask files.")
 

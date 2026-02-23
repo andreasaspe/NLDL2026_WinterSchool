@@ -28,7 +28,7 @@ def train():
     vision_layers = (3, 4, 6, 3)
     vision_width = 64
 
-    context_length = 38            # 38 ECG features
+    context_length = 36            # 36 ECG features
     transformer_width = 128
     transformer_heads = 4
     transformer_layers = 4
@@ -41,7 +41,7 @@ def train():
 
     # --- Paths ---
     out_dir = "/data/awias/ecg-ct/models/clip3d_ecg/"
-    data_dir = "/data/Data/cropped_laa128_64mm/masks"
+    data_dir = "/data/awias/ecg-ct/EAT_mask_cropped_1mm"
     csv_path = "/data/awias/ecg-ct/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
     os.makedirs(out_dir, exist_ok=True)
 
