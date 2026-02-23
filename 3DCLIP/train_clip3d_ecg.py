@@ -1,5 +1,6 @@
 import os
 
+from matplotlib.pylab import spacing
 import torch
 from torch import optim
 from torch.cuda.amp import GradScaler, autocast
@@ -19,6 +20,12 @@ def train():
     epochs = 200
     batch_size = 32
     learning_rate = 1e-4
+
+    # 1.0mm spacing, 192³ network, batch 32 is the clear winner:
+    # 100% of scans (all ~5065 fit)
+    # Batch 32 (great for contrastive learning)
+    # 56 GB VRAM (plenty of headroom)
+    # 1.0mm is standard resolution for cardiac CT — no meaningful information loss for fat masks
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
