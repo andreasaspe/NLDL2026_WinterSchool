@@ -53,7 +53,7 @@ def train():
     ).to(device)
 
     # --- Paths ---
-    out_dir = "/data/awias/NLDL_Winterschool/models/clip3d_ecg/"
+    out_dir = "/data/awias/NLDL_Winterschool/models/"
     data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
     csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
     os.makedirs(out_dir, exist_ok=True)
