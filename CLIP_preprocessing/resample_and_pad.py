@@ -5,7 +5,7 @@ import tools as tools
 
 mask_folder = "/storage/awias/NLDL_Winterschool/predictions_periseg_postprocessed_EAT"
 img_folder = "/storage/Data/DTU-CGPS-1/NIFTI"
-output_folder = "/data/awias/NLDL_Winterschool/clip3d/EAT_mask_cropped_1mm"
+output_folder = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
 
 os.makedirs(output_folder, exist_ok=True)
 
