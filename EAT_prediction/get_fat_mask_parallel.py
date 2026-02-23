@@ -30,7 +30,7 @@ def process_file(filename):
         img = sitk.GetArrayFromImage(img_sitk)
 
         # Create EAT mask
-        eat_mask = (label == 1) & (img >= -190) & (img <= -30)
+        eat_mask = (label == 1) & (img >= -190) & (img <= 0)
         eat_mask = eat_mask.astype(np.uint8)
 
         # Convert back to SITK
@@ -40,7 +40,7 @@ def process_file(filename):
         # Save
         sitk.WriteImage(eat_mask_sitk, output_path)
 
-        return f"Processed {filename}"
+        # return f"Processed {filename}"
 
     except Exception as e:
         return f"Error processing {filename}: {e}"

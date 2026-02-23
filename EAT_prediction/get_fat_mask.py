@@ -27,7 +27,7 @@ for filename in tqdm(os.listdir(label_folder)):
         img = sitk.GetArrayFromImage(img_sitk)
 
         # Create a mask for EAT
-        eat_mask = (label == 1) & (img >= -190) & (img <= -30)
+        eat_mask = (label == 1) & (img >= -190) & (img <= 0)
         eat_mask = eat_mask.astype(np.uint8)
 
         # Create a new SimpleITK image for the EAT mask
