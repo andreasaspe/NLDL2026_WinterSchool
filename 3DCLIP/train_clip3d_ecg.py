@@ -24,7 +24,7 @@ def train():
 
     # --- Model architecture ---
     embed_dim = 128
-    image_resolution = 128
+    image_resolution = 256         # 256³ input (must be divisible by 32)
     vision_layers = (3, 4, 6, 3)
     vision_width = 64
 
