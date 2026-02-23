@@ -24,12 +24,12 @@ def train():
 
     # --- Model architecture ---
     embed_dim = 128
-    image_resolution = 256         # 256³ input (must be divisible by 32)
+    image_resolution = 320         # 256³ input (must be divisible by 32)
     vision_layers = (3, 4, 6, 3)
     vision_width = 64
 
     context_length = 36            # 36 ECG features
-    transformer_width = 128
+    transformer_width = 256
     transformer_heads = 4
     transformer_layers = 4
 
@@ -40,9 +40,9 @@ def train():
     ).to(device)
 
     # --- Paths ---
-    out_dir = "/data/awias/ecg-ct/models/clip3d_ecg/"
-    data_dir = "/data/awias/ecg-ct/EAT_mask_cropped_1mm"
-    csv_path = "/data/awias/ecg-ct/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
+    out_dir = "/data/awias/NLDL_Winterschool/models/clip3d_ecg/"
+    data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
+    csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
     os.makedirs(out_dir, exist_ok=True)
 
     # --- Optional checkpoint resume ---

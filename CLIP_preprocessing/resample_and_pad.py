@@ -9,8 +9,8 @@ output_folder = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
 
 os.makedirs(output_folder, exist_ok=True)
 
-target_spacing = 0.5
-target_size = (256, 256, 256)
+target_spacing = 1.0
+target_size = (192, 192, 192)
 
 too_large_count = 0
 total_count = 0
@@ -50,7 +50,7 @@ for filename in os.listdir(mask_folder):
         too_large_count += 1
         continue
 
-    # Pad mask to 256x256x256
+    # Pad mask to target_size
     mask_padded_sitk = tools.pad_to_shape(mask_resampled_sitk,target_size=target_size,pad_value=0)
 
     # Save processed mask
