@@ -11,6 +11,7 @@ import torchio as tio
 import wandb
 
 from tqdm import tqdm
+import time
 
 
 def train():
@@ -27,7 +28,12 @@ def train():
     # 56 GB VRAM (plenty of headroom)
     # 1.0mm is standard resolution for cardiac CT — no meaningful information loss for fat masks
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Set the device
+    if torch.cuda.is_available():
+        # Select the second GPU (index 1)
+        device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
+    else:
+        device = torch.device("cpu")
 
     # --- Model architecture ---
     embed_dim = 128
@@ -79,7 +85,25 @@ def train():
     scaler = GradScaler()
 
     if wandb_bool:
-        wandb.init(project="CLIP3D-ECG", entity="andreasaspe")
+        wandb.init(
+            project="CLIP3D-ECG",
+            entity="andreasaspe",
+            notes="First real run. This run uses 1mm spacing and batch size 32.",
+            config={
+                "epochs": epochs,
+                "batch_size": batch_size,
+                "learning_rate": learning_rate,
+                "embed_dim": embed_dim,
+                "image_resolution": image_resolution,
+                "vision_layers": vision_layers,
+                "vision_width": vision_width,
+                "context_length": context_length,
+                "transformer_width": transformer_width,
+                "transformer_heads": transformer_heads,
+                "transformer_layers": transformer_layers,
+            }
+        )
+        wandb.watch(model)
 
     total_loss = 0.0
     total_steps = 0
@@ -114,12 +138,18 @@ def train():
             total_steps += 1
 
             if wandb_bool:
-                wandb.log({"train/loss": loss.item(),
-                           "train/moving_avg_loss": total_loss / total_steps})
+                wandb.log({
+                    "train/loss": loss.item(),
+                    "train/moving_avg_loss": total_loss / total_steps,
+                    "epoch": epoch
+                })
 
         avg_loss = epoch_loss / len(dl_tr)
         if wandb_bool:
-            wandb.log({"train/avg_epoch_loss": avg_loss})
+            wandb.log({
+                "train/avg_epoch_loss": avg_loss,
+                "epoch": epoch
+            })
 
         # Periodic checkpoint
         if epoch % save_every == 0:
@@ -150,7 +180,10 @@ def train():
 
         avg_val_loss = val_loss / len(dl_val)
         if wandb_bool:
-            wandb.log({"validation/avg_epoch_loss": avg_val_loss})
+            wandb.log({
+                "validation/avg_epoch_loss": avg_val_loss,
+                "epoch": epoch
+            })
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
