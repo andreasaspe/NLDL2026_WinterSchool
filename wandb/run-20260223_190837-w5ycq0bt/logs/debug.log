@@ -18,3 +18,5 @@ config: {'epochs': 200, 'batch_size': 32, 'learning_rate': 0.0001, 'embed_dim': 
 2026-02-23 19:08:39,009 INFO    MainThread:4070010 [wandb_run.py:_redirect():2465] Redirects installed.
 2026-02-23 19:08:39,011 INFO    MainThread:4070010 [wandb_init.py:init():1082] run started, returning control to user process
 2026-02-23 19:08:39,011 INFO    MainThread:4070010 [wandb_watch.py:_watch():69] Watching
+2026-02-24 06:32:45,583 INFO    wandb-AsyncioManager-main:4070010 [service_client.py:_forward_responses():134] Reached EOF.
+2026-02-24 06:32:45,583 INFO    wandb-AsyncioManager-main:4070010 [mailbox.py:close():155] Closing mailbox, abandoning 1 handles.

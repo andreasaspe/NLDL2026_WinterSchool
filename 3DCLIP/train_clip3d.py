@@ -4,6 +4,7 @@ import torch
 from torch import optim
 from torch.cuda.amp import GradScaler, autocast
 import torch.nn.functional as F
+import numpy as np
 from model import CLIP  # Assuming you have a CLIP model defined in model.py
 from clip_dataloader import clip3d_dataloader, clip3d_subjects_dataset  # Assuming you have a dataloader defined in clip_dataloader.py
 import torchio as tio
@@ -104,6 +105,11 @@ def train():
                 loss = (loss_img + loss_ctx) / 2.0
 
             scaler.scale(loss).backward()
+            
+            # Clip gradients to prevent explosion
+            scaler.unscale_(optimizer)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            
             scaler.step(optimizer)
             scaler.update()
 
@@ -112,7 +118,13 @@ def train():
             total_steps += 1
 
             if wandb_bool:
-                wandb.log({"train/loss": loss.item(), "train/moving_avg_loss": total_loss / total_steps})
+                # Log logit_scale for monitoring
+                current_logit_scale = model.logit_scale.exp().item()
+                wandb.log({
+                    "train/loss": loss.item(), 
+                    "train/moving_avg_loss": total_loss / total_steps,
+                    "train/logit_scale": current_logit_scale
+                })
 
         avg_loss = epoch_loss / len(dl_tr)
         if wandb_bool:
@@ -145,7 +157,16 @@ def train():
                 val_loss += loss.item()
         avg_val_loss = val_loss / len(dl_val)
         if wandb_bool:
-            wandb.log({"validation/avg_epoch_loss": avg_val_loss})
+            wandb.log({
+                "validation/avg_epoch_loss": avg_val_loss,
+                "validation/logit_scale": model.logit_scale.exp().item()
+            })
+        
+        # Check for NaN
+        if np.isnan(avg_val_loss) or np.isnan(avg_loss):
+            print(f"WARNING: NaN detected! Epoch {epoch}, Train loss: {avg_loss}, Val loss: {avg_val_loss}")
+            print(f"Logit scale value: {model.logit_scale.item()} (exp: {model.logit_scale.exp().item()})")
+            break
         
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss

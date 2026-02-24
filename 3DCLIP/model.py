@@ -325,11 +325,12 @@ class CLIP(nn.Module):
         text_features = self.encode_text(text)
 
         # normalized features
-        image_features = image_features / image_features.norm(dim=1, keepdim=True)
-        text_features = text_features / text_features.norm(dim=1, keepdim=True)
+        image_features = image_features / (image_features.norm(dim=1, keepdim=True) + 1e-8)
+        text_features = text_features / (text_features.norm(dim=1, keepdim=True) + 1e-8)
 
         # cosine similarity as logits
-        logit_scale = self.logit_scale.exp()
+        # Clamp logit_scale to log(100) to prevent overflow (following OpenAI CLIP)
+        logit_scale = self.logit_scale.clamp(max=np.log(100)).exp()
         logits_per_image = logit_scale * image_features @ text_features.t()
         logits_per_text = logits_per_image.t()
 
@@ -373,8 +374,8 @@ class CLIP(nn.Module):
         text_features = self.encode_text(text)
 
         # normalized features
-        image_features = image_features / image_features.norm(dim=1, keepdim=True)
-        text_features = text_features / text_features.norm(dim=1, keepdim=True)
+        image_features = image_features / (image_features.norm(dim=1, keepdim=True) + 1e-8)
+        text_features = text_features / (text_features.norm(dim=1, keepdim=True) + 1e-8)
         
         clip_cosine_score = (image_features * text_features).sum(dim=-1)  # shape [1], scalar
 

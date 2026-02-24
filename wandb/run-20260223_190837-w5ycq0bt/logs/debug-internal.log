@@ -4,3 +4,9 @@
 {"time":"2026-02-23T19:08:38.196700592+01:00","level":"INFO","msg":"stream: started","id":"w5ycq0bt"}
 {"time":"2026-02-23T19:08:38.19671276+01:00","level":"INFO","msg":"writer: started","stream_id":"w5ycq0bt"}
 {"time":"2026-02-23T19:08:38.196713712+01:00","level":"INFO","msg":"sender: started","stream_id":"w5ycq0bt"}
+{"time":"2026-02-24T01:59:39.225962571+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/andreasaspe/CLIP3D-ECG/w5ycq0bt/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
+{"time":"2026-02-24T06:32:45.583588444+01:00","level":"INFO","msg":"stream: closing","id":"w5ycq0bt"}
+{"time":"2026-02-24T06:32:46.551355241+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-24T06:32:46.857571383+01:00","level":"INFO","msg":"handler: closed","stream_id":"w5ycq0bt"}
+{"time":"2026-02-24T06:32:46.857664944+01:00","level":"INFO","msg":"sender: closed","stream_id":"w5ycq0bt"}
+{"time":"2026-02-24T06:32:46.857673697+01:00","level":"INFO","msg":"stream: closed","id":"w5ycq0bt"}

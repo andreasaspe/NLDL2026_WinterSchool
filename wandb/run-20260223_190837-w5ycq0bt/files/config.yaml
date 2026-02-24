@@ -1,0 +1,81 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            16x8ab6wzp9j0te1rf02h91m9qvhiapa:
+                codePath: 3DCLIP/train_clip3d_ecg.py
+                codePathLocal: 3DCLIP/train_clip3d_ecg.py
+                cpu_count: 24
+                cpu_count_logical: 48
+                cudaVersion: "13.1"
+                disk:
+                    /:
+                        total: "3935709487104"
+                        used: "243432062976"
+                email: andreasaspe@gmail.com
+                executable: /home/awias/miniconda3/envs/standard/bin/python
+                git:
+                    commit: 8eb4042779b1024ae3798a315c4588959026a016
+                    remote: git@github.com:andreasaspe/NLDL2026_WinterSchool.git
+                gpu: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+                      uuid: GPU-b189fb03-e696-386a-4e37-e471fc76d8b7
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Workstation Edition
+                      uuid: GPU-bb791e03-0b49-e91a-e278-28631a20909f
+                host: DTU-GPU-9
+                memory:
+                    total: "269560815616"
+                os: Linux-6.17.0-14-generic-x86_64-with-glibc2.39
+                program: /home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py
+                python: CPython 3.14.2
+                root: /home/awias/Documents/code/NLDL2026_WinterSchool
+                startedAt: "2026-02-23T18:08:37.669852Z"
+                writerId: 16x8ab6wzp9j0te1rf02h91m9qvhiapa
+        m: []
+        python_version: 3.14.2
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 1
+                - 16
+            "4": 3.14.2
+            "5": 0.25.0
+            "12": 0.25.0
+            "13": linux-x86_64
+batch_size:
+    value: 32
+context_length:
+    value: 36
+embed_dim:
+    value: 128
+epochs:
+    value: 200
+image_resolution:
+    value: 192
+learning_rate:
+    value: 0.0001
+transformer_heads:
+    value: 4
+transformer_layers:
+    value: 4
+transformer_width:
+    value: 256
+vision_layers:
+    value:
+        - 3
+        - 4
+        - 6
+        - 3
+vision_width:
+    value: 64
