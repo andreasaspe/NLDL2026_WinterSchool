@@ -123,7 +123,9 @@ def train():
 
     scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
 
-    scaler = GradScaler()
+    # Start with a lower scale factor — default 2^16=65536 overflows immediately
+    # with 192³ 3D convolutions in FP16
+    scaler = GradScaler(init_scale=2**10, growth_interval=1000)
 
 
     total_loss = 0.0
