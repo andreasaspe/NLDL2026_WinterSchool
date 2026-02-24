@@ -29,7 +29,7 @@ def train():
     # Set the device
     if torch.cuda.is_available():
         # Select the second GPU (index 1)
-        device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
+        device = torch.device("cuda:0" if torch.cuda.device_count() > 1 else "cuda:0")
     else:
         device = torch.device("cpu")
 
@@ -200,7 +200,8 @@ def train():
                 })
 
         # Step the LR scheduler after each epoch
-        scheduler.step()
+        if scheduler is not None:
+            scheduler.step()
 
         avg_loss = epoch_loss / max(epoch_steps, 1)
         if wandb_bool:
