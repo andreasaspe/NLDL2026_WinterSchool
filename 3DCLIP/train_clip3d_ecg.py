@@ -29,7 +29,7 @@ def train():
     # Set the device
     if torch.cuda.is_available():
         # Select the second GPU (index 1)
-        device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
+        device = torch.device("cuda:0" if torch.cuda.device_count() > 1 else "cuda:0")
     else:
         device = torch.device("cpu")
 
@@ -109,7 +109,7 @@ def train():
 
     # --- Optimizer + Scheduler ---
     # Set constant low learning rate
-    optimizer = optim.AdamW(model.parameters(), lr=5e-5, weight_decay=weight_decay)
+    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     if model_chkpt is not None:
         model.load_state_dict(model_chkpt)
     if optimizer_chkpt is not None:
