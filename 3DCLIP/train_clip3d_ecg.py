@@ -19,7 +19,7 @@ def train():
     # Training settings
     save_every = 20
     wandb_bool = True
-    epochs = 200
+    epochs = 1000
     batch_size = 32
     learning_rate = 5e-5           # Reduced from 1e-4
     weight_decay = 1e-3            # Increased from 1e-5 (strong regularization)
@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Adaptive LR (cosine + warmup), gradient clipping, label smoothing, stronger weight decay, NaN protection.",
+            notes="MORE EPOCHS. Adaptive LR (cosine + warmup), gradient clipping, label smoothing, stronger weight decay, NaN protection.",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
