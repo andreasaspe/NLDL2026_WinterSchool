@@ -50,7 +50,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="First real run. This run uses 1mm spacing and batch size 32.",
+            notes="Added stability so it should non convert to NaN. Also training with less data, since I've added these train/data/test splits to the CSV.",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
