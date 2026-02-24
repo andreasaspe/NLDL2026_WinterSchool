@@ -17,7 +17,7 @@ import time
 def train():
     # Training settings
     save_every = 20
-    wandb_bool = False
+    wandb_bool = True
     epochs = 200
     batch_size = 32
     learning_rate = 1e-4
