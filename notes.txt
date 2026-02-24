@@ -1,7 +1,6 @@
 Output from Claude Sonnet 4.5 after fixing my training instabilities:
 
 ###
-
 NaN loss after ~150 epochs is a classic training instability issue. Let me check the training code for common culprits:
 
 Found the issue! The logit_scale parameter is learned without constraints and can explode. This is a well-known problem in CLIP training.
@@ -30,5 +29,17 @@ Prevents gradient explosion.
 Now logs train/logit_scale and validation/logit_scale to W&B
 Added NaN detection with early stopping and diagnostic printing
 You can now resume training from your last checkpoint. The logit_scale will be constrained and you should see stable training!
-
 ###
+
+
+
+
+Perfect batch, resample and data inclusion tradeoff:
+###
+1.0mm spacing, 192³ network, batch 32 is the clear winner:
+100% of scans (all ~5065 fit)
+Batch 32 (great for contrastive learning)
+56 GB VRAM (plenty of headroom)
+1.0mm is standard resolution for cardiac CT — no meaningful information loss for fat masks
+###
+
