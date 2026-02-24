@@ -21,7 +21,7 @@ def train():
     wandb_bool = True
     epochs = 1000
     batch_size = 32
-    learning_rate = 5e-5           # Reduced from 1e-4
+    learning_rate = 0.000025 #5e-5           # Reduced from 1e-4
     weight_decay = 1e-3            # Increased from 1e-5 (strong regularization)
     warmup_epochs = 10             # LR warmup
     label_smoothing = 0.1          # Prevents overconfident predictions
