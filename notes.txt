@@ -43,3 +43,47 @@ Batch 32 (great for contrastive learning)
 1.0mm is standard resolution for cardiac CT — no meaningful information loss for fat masks
 ###
 
+
+
+
+
+
+Training instabilities again
+###
+Now I can see the full picture. Your training script is missing the fixes I suggested earlier — no gradient clipping, no NaN detection, no LR scheduling. Let me also check the FP16 interaction with the model more carefully.
+
+Read model.py, lines 50 to 100
+
+Now I see the full picture. Let me apply the fixes directly to your actual training script:
+
+Now let me replace the training loop with gradient clipping, NaN protection, label smoothing, and proper logging:
+
+Now update the wandb config to log the new hyperparameters:
+
+Here's what was wrong and what's now fixed:
+
+Why NaN Still Happens
+Your training loop had none of the earlier suggested fixes applied. The root causes:
+
+logit_scale grows → exp() overflows in FP16 — FP16 max is ~65504. If logit_scale reaches ~11, exp(11) × cosine_sim ≈ 60000 which is near the FP16 limit. Multiply by batch size in cross_entropy softmax → overflow → NaN. The clamp in model.py helps but...
+No gradient clipping — A single bad batch can produce huge gradients that break all parameters at once
+No NaN batch skipping — If ECG data has NaN values (missing measurements), the entire training collapses
+Incomplete last batch — With batch_size=32 and 3237 samples, the last batch has only 5 samples. Contrastive loss on 5 samples is very noisy and can produce extreme gradients
+Why Validation Jumps Wildly (Overfitting)
+Fixed LR = 1e-4 for 200 epochs — No decay, so the model keeps taking large steps even after converging, causing oscillation
+weight_decay=1e-5 — Way too weak for a ~30M parameter model with only 3237 samples
+No label smoothing — Hard contrastive targets (one-hot) encourage memorization
+Summary of Fixes Applied
+Problem	Fix
+NaN from FP16 overflow	Skip batches with NaN inputs/logits/loss/gradients
+NaN from gradient explosion	clip_grad_norm_(max_norm=1.0)
+NaN from tiny batches	drop_last=True on train loader
+Overfitting	weight_decay 1e-5 → 1e-3 (100x stronger)
+Overfitting	label_smoothing=0.1 (softer targets)
+Validation jumping	Cosine annealing LR with 10-epoch warmup, decays to 1% of peak
+Fixed LR	learning_rate 1e-4 → 5e-5 (halved peak)
+No monitoring	Logs logit_scale, grad_norm, learning_rate, train_val_gap to W&B
+The LR schedule now looks like:
+
+This should stabilize training and reduce overfitting significantly. Watch the train/train_val_gap metric in W&B — it should stay small.
+###
