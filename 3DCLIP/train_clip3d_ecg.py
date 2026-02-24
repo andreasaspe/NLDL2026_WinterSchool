@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="MORE EPOCHS. Adaptive LR (cosine + warmup), gradient clipping, label smoothing, stronger weight decay, NaN protection.",
+            notes="Lower constant learning rate and less extensive data augmentation",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
@@ -108,20 +108,13 @@ def train():
                                 shuffle=False)
 
     # --- Optimizer + Scheduler ---
-    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # Set constant low learning rate
+    optimizer = optim.AdamW(model.parameters(), lr=5e-5, weight_decay=weight_decay)
     if model_chkpt is not None:
         model.load_state_dict(model_chkpt)
     if optimizer_chkpt is not None:
         optimizer.load_state_dict(optimizer_chkpt)
-
-    # Cosine annealing with linear warmup
-    def lr_lambda(epoch):
-        if epoch < warmup_epochs:
-            return (epoch + 1) / warmup_epochs  # Linear warmup from ~0 to 1
-        progress = (epoch - warmup_epochs) / max(1, epochs - warmup_epochs)
-        return max(0.01, 0.5 * (1.0 + np.cos(np.pi * progress)))  # Cosine decay to 1% of peak
-
-    scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+    scheduler = None  # No scheduler, constant LR
 
     # Start with a lower scale factor — default 2^16=65536 overflows immediately
     # with 192³ 3D convolutions in FP16

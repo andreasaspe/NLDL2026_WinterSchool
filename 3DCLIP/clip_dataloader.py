@@ -22,18 +22,18 @@ class clip3d_dataloader(torch.utils.data.Dataset):
                      "cl_cut_75_elongation", "cl_cut_75_cutarea", "radii_95", "normalized_shape_index",
                      "elongation", "flatness", "surface_area", "ostium_major_axis_length", "ostium_minor_axis_length"]
         if self.augment:
-            # Compose rigid and flip transforms
+            # Reduced augmentation: only small flips and mild rotation
             self.aug_transform = tio.Compose([
-                tio.RandomFlip(axes=(0, 1, 2), flip_probability=0.5), # Random flip on any axis
+                tio.RandomFlip(axes=(0, 1, 2), flip_probability=0.3), # Lower flip probability
                 tio.RandomAffine(
                     scales=1,  # No scaling
-                    degrees=30,  # Up to 45 degrees random rotation
-                    translation=10,  # Up to 10 voxels random translation
-                    isotropic=True,  # Isotropic scaling
-                    center='image',  # Random center for rotation
-                    default_pad_value=0,  # Padding value
+                    degrees=10,  # Up to 10 degrees random rotation
+                    translation=5,  # Up to 5 voxels random translation
+                    isotropic=True,
+                    center='image',
+                    default_pad_value=0,
                     image_interpolation='nearest',
-                    p=0.5
+                    p=0.3
                 ),
             ])
         else:
