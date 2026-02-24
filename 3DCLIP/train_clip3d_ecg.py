@@ -17,11 +17,11 @@ import time
 def train():
     # Training settings
     save_every = 20
-    wandb_bool = True
+    wandb_bool = False
     epochs = 200
     batch_size = 32
     learning_rate = 1e-4
-    
+
     # Set the device
     if torch.cuda.is_available():
         # Select the second GPU (index 1)
@@ -46,38 +46,6 @@ def train():
         context_length, transformer_width, transformer_heads, transformer_layers,
     ).to(device)
 
-    # --- Paths ---
-    out_dir = "/data/awias/NLDL_Winterschool/models/"
-    data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
-    csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
-    os.makedirs(out_dir, exist_ok=True)
-
-    # --- Optional checkpoint resume ---
-    model_chkpt = None
-    optimizer_chkpt = None
-
-    # --- Datasets (80/20 split from CSV, same seed) ---
-    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  train=True)
-    ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, train=False)
-
-    dl_tr = tio.SubjectsLoader(ds_tr,
-                               batch_size=batch_size,
-                               num_workers=0,
-                               shuffle=True)
-    dl_val = tio.SubjectsLoader(ds_val,
-                                batch_size=batch_size,
-                                num_workers=0,
-                                shuffle=False)
-
-    # --- Optimizer ---
-    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-5)
-    if model_chkpt is not None:
-        model.load_state_dict(model_chkpt)
-    if optimizer_chkpt is not None:
-        optimizer.load_state_dict(optimizer_chkpt)
-
-    scaler = GradScaler()
-
     if wandb_bool:
         wandb.init(
             project="CLIP3D-ECG",
@@ -98,6 +66,48 @@ def train():
             }
         )
         wandb.watch(model)
+
+    # --- Paths ---
+    out_dir = "/data/awias/NLDL_Winterschool/models/"
+    data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
+    csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan_split.csv"
+    os.makedirs(out_dir, exist_ok=True)
+
+    if wandb_bool:
+        out_dir = os.path.join(out_dir, wandb.run.name)
+        os.makedirs(out_dir, exist_ok=True)
+    else:
+        # Generate a unique folder name based on timestamp
+        timestamp = time.strftime("%d.%m.%Y-%H:%M:%S")
+        out_dir = os.path.join(out_dir, f"{timestamp}")
+        os.makedirs(out_dir, exist_ok=True)
+
+    # --- Optional checkpoint resume ---
+    model_chkpt = None
+    optimizer_chkpt = None
+
+    # --- Datasets (using split column from CSV) ---
+    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
+    ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+
+    dl_tr = tio.SubjectsLoader(ds_tr,
+                               batch_size=batch_size,
+                               num_workers=0,
+                               shuffle=True)
+    dl_val = tio.SubjectsLoader(ds_val,
+                                batch_size=batch_size,
+                                num_workers=0,
+                                shuffle=False)
+
+    # --- Optimizer ---
+    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-5)
+    if model_chkpt is not None:
+        model.load_state_dict(model_chkpt)
+    if optimizer_chkpt is not None:
+        optimizer.load_state_dict(optimizer_chkpt)
+
+    scaler = GradScaler()
+
 
     total_loss = 0.0
     total_steps = 0

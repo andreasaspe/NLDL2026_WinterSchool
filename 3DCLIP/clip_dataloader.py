@@ -220,8 +220,16 @@ class clip3d_ecg_dataset(tio.SubjectsDataset):
         'S_PeakAmpl_V4', 'S_PeakAmpl_V5', 'S_PeakAmpl_V6',
     ]
 
-    def __init__(self, data_dir, csv_path, augment=False, train=True,
-                 val_frac=0.2, seed=42, mask_suffix='_EAT.nii.gz'):
+    def __init__(self, data_dir, csv_path, augment=False, split='train',
+                 mask_suffix='_EAT.nii.gz'):
+        """
+        Args:
+            data_dir: Directory containing mask files
+            csv_path: Path to CSV with 'split' column (train/val/test)
+            augment: Whether to apply data augmentation
+            split: Which split to use ('train', 'val', or 'test')
+            mask_suffix: Suffix to append to NIFTI column to get mask filename
+        """
         import pandas as pd
 
         self.data_dir = data_dir
@@ -229,21 +237,18 @@ class clip3d_ecg_dataset(tio.SubjectsDataset):
 
         df = pd.read_csv(csv_path)
 
-        # Only keep rows whose mask file exists on disk
+        # Filter by split column
+        if 'split' not in df.columns:
+            raise ValueError(f"CSV file must contain 'split' column. Found columns: {df.columns.tolist()}")
+        
+        df = df[df['split'] == split].reset_index(drop=True)
+        print(f"Found {len(df)} subjects in '{split}' split from CSV.")
+
+        # Only keep rows whose mask file exists on disk (just preventing file not found errors later on)
         mask_files = set(os.listdir(data_dir))
         df['mask_file'] = df['NIFTI'].apply(lambda x: x + mask_suffix)
         df = df[df['mask_file'].isin(mask_files)].reset_index(drop=True)
-        print(f"Found {len(df)} subjects with both ECG data and mask files.")
-
-        # Train / val split (deterministic)
-        df = df.sample(frac=1, random_state=seed).reset_index(drop=True)
-        split_idx = int(len(df) * (1 - val_frac))
-        if train:
-            df = df.iloc[:split_idx].reset_index(drop=True)
-            print(f"Training set: {len(df)} subjects")
-        else:
-            df = df.iloc[split_idx:].reset_index(drop=True)
-            print(f"Validation set: {len(df)} subjects")
+        print(f"Found {len(df)} subjects with both ECG data and mask files in '{split}' split.")
 
         # Build subjects list
         subjects = []
