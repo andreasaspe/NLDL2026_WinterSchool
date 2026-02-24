@@ -278,10 +278,21 @@ def main():
     # ======================== Load Model & Extract Embeddings ========================
     
     print(f"\n{'='*60}")
-    print("Loading model and extracting embeddings...")
+    print("Loading model...")
     print(f"{'='*60}\n")
-    
     model = load_model(checkpoint_path, device)
+    
+    # After loading model, before extracting embeddings:
+    print(f"\n🔍 Model Diagnostics:")
+    print(f"  Logit scale: {model.logit_scale.item():.3f} (exp: {model.logit_scale.exp().item():.1f})")
+    print(f"  Expected range: 2.7 - 4.6 (corresponding to exp(2.7)=15 to exp(4.6)=100)")
+
+    # Check if model is actually trained
+    sample_weight = model.visual.conv1.weight[0, 0, 0, 0, :3].detach().cpu()
+    print(f"  Sample conv1 weights: {sample_weight.numpy()}")
+    print(f"  (Random init would be close to N(0, 0.02))")
+
+    print("Extract embeddings")
     eat_embeddings, ecg_embeddings, eat_volumes = extract_embeddings(model, dataloader, device, compute_volumes=True)
     
     # Compute alignment metrics
@@ -447,6 +458,7 @@ def main():
         for sex in df['clin_sex'].unique():
             mask = df['clin_sex'].values == sex
             print(f"  Sex={sex} (n={mask.sum()}): {cosine_scores[mask].mean():.3f}")
+
     
     # Save embeddings for further analysis
     save_embeddings_path = os.path.join(output_dir, f'{split}_embeddings.npz')
