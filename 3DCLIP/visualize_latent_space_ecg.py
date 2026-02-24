@@ -234,18 +234,20 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
 
 def main():
     # ======================== Configuration ========================
+
+    checkpoint_folder_name = "major-violet-9"  # Update this to your actual folder name
     
     # Paths
-    checkpoint_path = "/data/awias/NLDL_Winterschool/models/major-violet-9/best_clip3d_ecg.pth"  # Update this!
+    checkpoint_path = f"/data/awias/NLDL_Winterschool/models/{checkpoint_folder_name}/best_clip3d_ecg.pth"  # Update this!
     data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
     csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan_split.csv"
-    output_dir = "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/latent_visualizations"
+    output_dir = f"/data/awias/NLDL_Winterschool/latent_visualizations/{checkpoint_folder_name}"
     
     # Settings
     split = 'test'  # 'train', 'val', or 'test'
     batch_size = 16
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    reduction_method = 'tsne'  # 'pca', 'tsne', or 'umap'
+    reduction_method = 'pca'  # 'pca', 'tsne', or 'umap'
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -336,13 +338,65 @@ def main():
                           cmap='RdYlGn', continuous=False,
                           save_path=os.path.join(output_dir, f'eat_{reduction_method}_low_voltage.png'))
     
-    # 2. ECG embeddings colored by alignment score
+    # 2. ECG embeddings colored by all variables
+    
+    # EAT volume
+    if eat_volumes is not None:
+        plot_embeddings_2d(ecg_reduced, eat_volumes,
+                          f"ECG Embeddings - EAT Volume ({reduction_method.upper()})",
+                          cmap='viridis',
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_volume.png'))
+    
+    if 'clin_sex' in df.columns:
+        plot_embeddings_2d(ecg_reduced, df['clin_sex'].values,
+                          f"ECG Embeddings - Sex ({reduction_method.upper()})",
+                          cmap='coolwarm', continuous=False,
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_sex.png'))
+    
+    if 'clin_weight' in df.columns:
+        plot_embeddings_2d(ecg_reduced, df['clin_weight'].values,
+                          f"ECG Embeddings - Weight ({reduction_method.upper()})",
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_weight.png'))
+    
+    if 'low_voltage' in df.columns:
+        plot_embeddings_2d(ecg_reduced, df['low_voltage'].astype(int).values,
+                          f"ECG Embeddings - Low Voltage ECG ({reduction_method.upper()})",
+                          cmap='RdYlGn', continuous=False,
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_low_voltage.png'))
+    
+    # Alignment score
     plot_embeddings_2d(ecg_reduced, cosine_scores,
                       f"ECG Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
                       save_path=os.path.join(output_dir, f'ecg_{reduction_method}_alignment.png'))
     
-    # 3. Combined embeddings colored by alignment
+    # 3. Combined embeddings colored by all variables
+    
+    # EAT volume
+    if eat_volumes is not None:
+        plot_embeddings_2d(combined_reduced, eat_volumes,
+                          f"Combined Embeddings - EAT Volume ({reduction_method.upper()})",
+                          cmap='viridis',
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_volume.png'))
+    
+    if 'clin_sex' in df.columns:
+        plot_embeddings_2d(combined_reduced, df['clin_sex'].values,
+                          f"Combined Embeddings - Sex ({reduction_method.upper()})",
+                          cmap='coolwarm', continuous=False,
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_sex.png'))
+    
+    if 'clin_weight' in df.columns:
+        plot_embeddings_2d(combined_reduced, df['clin_weight'].values,
+                          f"Combined Embeddings - Weight ({reduction_method.upper()})",
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_weight.png'))
+    
+    if 'low_voltage' in df.columns:
+        plot_embeddings_2d(combined_reduced, df['low_voltage'].astype(int).values,
+                          f"Combined Embeddings - Low Voltage ECG ({reduction_method.upper()})",
+                          cmap='RdYlGn', continuous=False,
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_low_voltage.png'))
+    
+    # Alignment score
     plot_embeddings_2d(combined_reduced, cosine_scores,
                       f"Combined Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
