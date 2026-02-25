@@ -18,7 +18,7 @@ def train():
     # Training settings
     save_every = 20
     wandb_bool = True
-    epochs = 200
+    epochs = 1000
     batch_size = 32
     learning_rate = 1e-4
 
@@ -52,11 +52,42 @@ def train():
         context_length, transformer_width, transformer_heads, transformer_layers,
     ).to(device)
 
+    if wandb_bool:
+        wandb.init(
+            project="CLIP3D-ECG",
+            entity="andreasaspe",
+            notes="Back to old commit - major-violet-9. Training on full data to see how it works.",
+            config={
+                "epochs": epochs,
+                "batch_size": batch_size,
+                "learning_rate": learning_rate,
+                "embed_dim": embed_dim,
+                "image_resolution": image_resolution,
+                "vision_layers": vision_layers,
+                "vision_width": vision_width,
+                "context_length": context_length,
+                "transformer_width": transformer_width,
+                "transformer_heads": transformer_heads,
+                "transformer_layers": transformer_layers,
+            }
+        )
+        wandb.watch(model)
+
+
     # --- Paths ---
     out_dir = "/data/awias/NLDL_Winterschool/models/"
     data_dir = "/data/awias/NLDL_Winterschool/EAT_mask_cropped_1mm"
     csv_path = "/data/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
     os.makedirs(out_dir, exist_ok=True)
+
+    if wandb_bool:
+        out_dir = os.path.join(out_dir, wandb.run.name)
+        os.makedirs(out_dir, exist_ok=True)
+    else:
+        # Generate a unique folder name based on timestamp
+        timestamp = time.strftime("%d.%m.%Y-%H:%M:%S")
+        out_dir = os.path.join(out_dir, f"{timestamp}")
+        os.makedirs(out_dir, exist_ok=True)
 
     # --- Optional checkpoint resume ---
     model_chkpt = None
@@ -84,26 +115,6 @@ def train():
 
     scaler = GradScaler()
 
-    if wandb_bool:
-        wandb.init(
-            project="CLIP3D-ECG",
-            entity="andreasaspe",
-            notes="First real run. This run uses 1mm spacing and batch size 32.",
-            config={
-                "epochs": epochs,
-                "batch_size": batch_size,
-                "learning_rate": learning_rate,
-                "embed_dim": embed_dim,
-                "image_resolution": image_resolution,
-                "vision_layers": vision_layers,
-                "vision_width": vision_width,
-                "context_length": context_length,
-                "transformer_width": transformer_width,
-                "transformer_heads": transformer_heads,
-                "transformer_layers": transformer_layers,
-            }
-        )
-        wandb.watch(model)
 
     total_loss = 0.0
     total_steps = 0
