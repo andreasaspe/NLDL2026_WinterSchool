@@ -94,8 +94,13 @@ def train():
     optimizer_chkpt = None
 
     # --- Datasets (using split column from CSV) ---
-    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
-    ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+    # ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
+    # ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+
+    # No val split split
+    # --- 
+    ds_tr = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=True,  train=True)
+    ds_val = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=False, train=False)
 
     dl_tr = tio.SubjectsLoader(ds_tr,
                                batch_size=batch_size,
