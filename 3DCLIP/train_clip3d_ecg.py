@@ -7,7 +7,7 @@ from torch import optim
 from torch.cuda.amp import GradScaler, autocast
 import torch.nn.functional as F
 from model import CLIP
-from clip_dataloader import clip3d_ecg_dataset
+from clip_dataloader import clip3d_ecg_dataset, clip3d_ecg_dataset_nosplit
 import torchio as tio
 import wandb
 
@@ -29,7 +29,7 @@ def train():
     # Set the device
     if torch.cuda.is_available():
         # Select the second GPU (index 1)
-        device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
+        device = torch.device("cuda:0" if torch.cuda.device_count() > 1 else "cuda:0")
     else:
         device = torch.device("cpu")
 
