@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="MORE EPOCHS. Adaptive LR (cosine + warmup), gradient clipping, label smoothing, stronger weight decay, NaN protection.",
+            notes="Easy-rider again with all data",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
