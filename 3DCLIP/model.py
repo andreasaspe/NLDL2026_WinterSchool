@@ -49,7 +49,8 @@ class Bottleneck3D(nn.Module):
 class ModifiedResNet3D(nn.Module):
     def __init__(self, layers, output_dim, heads, input_resolution=128, width=64):
         super().__init__()
-        self.dropout = nn.Dropout3d(0.1)
+        self.dropout_stem = nn.Dropout3d(0.2)   # stem dropout (was 0.1)
+        self.dropout_deep = nn.Dropout3d(0.1)   # between deeper stages
         self.conv1 = nn.Conv3d(1, width // 2, kernel_size=3, stride=2, padding=1, bias=False)
         self.bn1 = nn.BatchNorm3d(width // 2)
         self.relu1 = nn.ReLU(inplace=True)
@@ -79,15 +80,17 @@ class ModifiedResNet3D(nn.Module):
 
     def forward(self, x):
         x = self.relu1(self.bn1(self.conv1(x)))
-        x = self.dropout(x)
+        x = self.dropout_stem(x)
         x = self.relu2(self.bn2(self.conv2(x)))
-        x = self.dropout(x)
+        x = self.dropout_stem(x)
         x = self.relu3(self.bn3(self.conv3(x)))
-        x = self.dropout(x)
+        x = self.dropout_stem(x)
         x = self.avgpool(x)
         x = self.layer1(x)
         x = self.layer2(x)
+        x = self.dropout_deep(x)
         x = self.layer3(x)
+        x = self.dropout_deep(x)
         x = self.layer4(x)
         x = self.attnpool(x)
         return x
@@ -154,9 +157,9 @@ class ResidualAttentionBlock(nn.Module):
         self.mlp = nn.Sequential(OrderedDict([
             ("c_fc", nn.Linear(d_model, d_model * 4)),
             ("gelu", QuickGELU()),
-            ("drop1", nn.Dropout(0.1)),  
+            ("drop1", nn.Dropout(0.15)),  
             ("c_proj", nn.Linear(d_model * 4, d_model)),
-            ("drop2", nn.Dropout(0.1))
+            ("drop2", nn.Dropout(0.15))
         ]))
         self.ln_2 = LayerNorm(d_model)
         self.attn_mask = attn_mask
@@ -324,12 +327,13 @@ class CLIP(nn.Module):
         image_features = self.encode_image(image)
         text_features = self.encode_text(text)
 
-        # normalized features
-        image_features = image_features / image_features.norm(dim=1, keepdim=True)
-        text_features = text_features / text_features.norm(dim=1, keepdim=True)
+        # normalized features (epsilon avoids division-by-zero → NaN)
+        image_features = image_features / (image_features.norm(dim=1, keepdim=True) + 1e-8)
+        text_features = text_features / (text_features.norm(dim=1, keepdim=True) + 1e-8)
 
         # cosine similarity as logits
-        logit_scale = self.logit_scale.exp()
+        # Clamp logit_scale to prevent overflow (OpenAI CLIP caps at log(100))
+        logit_scale = self.logit_scale.clamp(max=4.6052).exp()   # max ≈ 100
         logits_per_image = logit_scale * image_features @ text_features.t()
         logits_per_text = logits_per_image.t()
 

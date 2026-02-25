@@ -262,13 +262,20 @@ class clip3d_ecg_dataset(tio.SubjectsDataset):
             self.transform = tio.Compose([
                 tio.RandomFlip(axes=(0, 1, 2), flip_probability=0.5),
                 tio.RandomAffine(
-                    scales=1,
-                    degrees=10,
+                    scales=(0.95, 1.05),     # mild random scaling
+                    degrees=15,              # up to 15° rotation (was 10)
                     translation=5,
                     isotropic=False,
                     image_interpolation='nearest',
                     p=0.5,
                 ),
+                tio.RandomElasticDeformation(  # small elastic warps
+                    num_control_points=5,
+                    max_displacement=4,
+                    image_interpolation='nearest',
+                    p=0.3,
+                ),
+                tio.RandomNoise(std=(0, 0.05), p=0.2),  # light Gaussian noise
             ])
         else:
             self.transform = None
