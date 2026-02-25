@@ -56,7 +56,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Back to old commit - major-violet-9. Training on full data to see how it works.",
+            notes="Back to old commit - major-violet-9 AGAIN",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,

@@ -1,0 +1,9 @@
+Found 5059 subjects with both ECG data and mask files.
+Training set: 4047 subjects
+Found 5059 subjects with both ECG data and mask files.
+Validation set: 1012 subjects
+/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:116: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Epoch: 1:   0%|                                                                                                                                                    | 0/127 [00:00<?, ?it/s]/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:136: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Epoch: 1:   2%|██▏                                                                                                                                         | 2/127 [00:03<03:26,  1.65s/it]
