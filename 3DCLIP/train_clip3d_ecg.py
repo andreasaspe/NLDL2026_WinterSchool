@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Lower constant learning rate and less extensive data augmentation",
+            notes="New code but now with no split.",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
@@ -93,9 +93,16 @@ def train():
     model_chkpt = None
     optimizer_chkpt = None
 
-    # --- Datasets (using split column from CSV) ---
-    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
-    ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+    # train/val
+    # # --- Datasets (using split column from CSV) ---
+    # ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
+    # ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+
+    # train/test (old version)
+    # --- Datasets (80/20 split from CSV, same seed) ---
+    ds_tr = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=True,  train=True)
+    ds_val = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=False, train=False)
+    
 
     dl_tr = tio.SubjectsLoader(ds_tr,
                                batch_size=batch_size,
