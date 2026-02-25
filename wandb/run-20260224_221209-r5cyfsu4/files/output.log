@@ -1,0 +1,18 @@
+Found 3241 subjects in 'train' split from CSV.
+Found 3237 subjects with both ECG data and mask files in 'train' split.
+Found 811 subjects in 'val' split from CSV.
+Found 811 subjects with both ECG data and mask files in 'val' split.
+/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:126: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Epoch: 1:   0%|                                                       | 0/101 [00:00<?, ?it/s]/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:152: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+  ⚠ Inf/NaN gradients at epoch 1, step 0 — skipping step
+Epoch: 1:  89%|█████████████████▊  | 90/101 [02:21<00:17,  1.57s/it, loss=3.5941, lr=5.00e-06]
+Traceback (most recent call last):
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 274, in <module>
+    train()
+    ~~~~~^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 181, in train
+    if torch.isnan(grad_norm) or torch.isinf(grad_norm):
+                                 ~~~~~~~~~~~^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,25 @@
+Found 3241 subjects in 'train' split from CSV.
+Found 3237 subjects with both ECG data and mask files in 'train' split.
+Found 811 subjects in 'val' split from CSV.
+Found 811 subjects with both ECG data and mask files in 'val' split.
+/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:109: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+Epoch: 1:   0%|                                                                                                                                                  | 0/102 [00:00<?, ?it/s]/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:129: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Epoch: 1:   4%|█████▍                                                                                                                                    | 4/102 [00:07<03:04,  1.88s/it]
+Traceback (most recent call last):
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 199, in <module>
+    train()
+    ~~~~~^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 137, in train
+    scaler.step(optimizer)
+    ~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/amp/grad_scaler.py", line 463, in step
+    retval = self._maybe_opt_step(optimizer, optimizer_state, *args, **kwargs)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/amp/grad_scaler.py", line 356, in _maybe_opt_step
+    if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/amp/grad_scaler.py", line 356, in <genexpr>
+    if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
+               ~~~~~~^^
+KeyboardInterrupt

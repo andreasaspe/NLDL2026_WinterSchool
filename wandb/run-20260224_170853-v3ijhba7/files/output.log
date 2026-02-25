@@ -1,0 +1,12 @@
+Found 3241 subjects in 'train' split from CSV.
+Found 3237 subjects with both ECG data and mask files in 'train' split.
+Traceback (most recent call last):
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 199, in <module>
+    train()
+    ~~~~~^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 90, in train
+    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/clip_dataloader.py", line 257, in __init__
+    context = np.array([row[k] if pd.notna(row[k]) else 0.0
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -1,0 +1,47 @@
+{
+  "os":  "Linux-6.17.0-14-generic-x86_64-with-glibc2.39",
+  "python":  "CPython 3.14.2",
+  "startedAt":  "2026-02-24T16:08:58.193629Z",
+  "program":  "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py",
+  "codePath":  "3DCLIP/train_clip3d_ecg.py",
+  "codePathLocal":  "3DCLIP/train_clip3d_ecg.py",
+  "git":  {
+    "remote":  "git@github.com:andreasaspe/NLDL2026_WinterSchool.git",
+    "commit":  "97a638a848c1de83db4eef265ad0d50b97dd2e4f"
+  },
+  "email":  "andreasaspe@gmail.com",
+  "root":  "/home/awias/Documents/code/NLDL2026_WinterSchool",
+  "host":  "DTU-GPU-9",
+  "executable":  "/home/awias/miniconda3/envs/standard/bin/python",
+  "cpu_count":  24,
+  "cpu_count_logical":  48,
+  "gpu":  "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "gpu_count":  2,
+  "disk":  {
+    "/":  {
+      "total":  "3935709487104",
+      "used":  "244039315456"
+    }
+  },
+  "memory":  {
+    "total":  "269560815616"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064,
+      "architecture":  "Blackwell",
+      "uuid":  "GPU-b189fb03-e696-386a-4e37-e471fc76d8b7"
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064,
+      "architecture":  "Blackwell",
+      "uuid":  "GPU-bb791e03-0b49-e91a-e278-28631a20909f"
+    }
+  ],
+  "cudaVersion":  "13.1",
+  "writerId":  "h9juax7ica9nk6mlnhbfaarvwcd1qc0f"
+}
