@@ -109,13 +109,13 @@ def train():
 
     dl_tr = tio.SubjectsLoader(ds_tr,
                                batch_size=batch_size,
-                               num_workers=4,
+                               num_workers=0,
                                shuffle=True,
                                pin_memory=True,
                                drop_last=True)      # critical for contrastive loss
     dl_val = tio.SubjectsLoader(ds_val,
                                 batch_size=batch_size,
-                                num_workers=4,
+                                num_workers=0,
                                 pin_memory=True,
                                 shuffle=False)
 
