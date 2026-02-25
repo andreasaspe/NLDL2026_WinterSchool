@@ -1,0 +1,53 @@
+Found 5059 subjects with both ECG data and mask files.
+Training set: 4047 subjects
+Found 5059 subjects with both ECG data and mask files.
+Validation set: 1012 subjects
+/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:139: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler(init_scale=2**10, growth_interval=1000)
+Epoch: 1:   0%|                                                                         | 0/126 [00:00<?, ?it/s]/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:162: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast():
+Epoch: 1:   7%|████▋                                                            | 9/126 [00:30<06:36,  3.39s/it]
+Traceback (most recent call last):
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 284, in <module>
+    train()
+    ~~~~~^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 156, in train
+    for step, batch in progress_bar:
+                       ^^^^^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+               ^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 801, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/_utils/fetch.py", line 54, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/clip_dataloader.py", line 286, in __getitem__
+    return super().__getitem__(idx)
+           ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/dataset.py", line 97, in __getitem__
+    subject = self._transform(subject)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/transform.py", line 158, in __call__
+    transformed = self.apply_transform(subject)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/augmentation/composition.py", line 59, in apply_transform
+    subject = transform(subject)  # type: ignore[assignment]
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/transform.py", line 158, in __call__
+    transformed = self.apply_transform(subject)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/augmentation/spatial/random_affine.py", line 199, in apply_transform
+    transformed = transform(subject)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/transform.py", line 158, in __call__
+    transformed = self.apply_transform(subject)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/augmentation/spatial/random_affine.py", line 422, in apply_transform
+    transformed_tensor = self.apply_affine_transform(
+        sitk_image,
+    ...<2 lines>...
+        default_value,
+    )
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/transforms/augmentation/spatial/random_affine.py", line 449, in apply_affine_transform
+    np_array = sitk.GetArrayFromImage(resampled)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/SimpleITK/extra.py", line 299, in GetArrayFromImage
+    return numpy.array(array_view, copy=True)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
