@@ -235,7 +235,7 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
 def main():
     # ======================== Configuration ========================
 
-    checkpoint_folder_name = "major-violet-9"  # Update this to your actual folder name
+    checkpoint_folder_name = "easy-river-18"  # Update this to your actual folder name
     
     # Paths
     checkpoint_path = f"/data/awias/NLDL_Winterschool/models/{checkpoint_folder_name}/best_clip3d_ecg.pth"  # Update this!
@@ -247,7 +247,7 @@ def main():
     split = 'test'  # 'train', 'val', or 'test'
     batch_size = 16
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    reduction_method = 'pca'  # 'pca', 'tsne', or 'umap'
+    reduction_method = 'tsne'  # 'pca', 'tsne', or 'umap'
     
     os.makedirs(output_dir, exist_ok=True)
     
