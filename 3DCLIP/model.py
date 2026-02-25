@@ -49,7 +49,7 @@ class Bottleneck3D(nn.Module):
 class ModifiedResNet3D(nn.Module):
     def __init__(self, layers, output_dim, heads, input_resolution=128, width=64):
         super().__init__()
-        self.dropout = nn.Dropout3d(0.1)
+        self.dropout = nn.Dropout3d(0.15)
         self.conv1 = nn.Conv3d(1, width // 2, kernel_size=3, stride=2, padding=1, bias=False)
         self.bn1 = nn.BatchNorm3d(width // 2)
         self.relu1 = nn.ReLU(inplace=True)
