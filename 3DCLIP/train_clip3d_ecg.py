@@ -103,7 +103,7 @@ def train():
     # ds_val = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=False, train=False)
     # # Save the split to disk so it's fully reproducible
     # ds_tr.split_df.to_csv(os.path.join(out_dir, 'split_train.csv'), index=False)
-    # ds_val.split_df.to_csv(os.path.join(out_dir, 'split_val.csv'), index=False)
+    # ds_val.split_df.to_csv(os.path.join(out_dir, 'split_val.csv'), index=False) 
     # print(f"  ✓ Split saved to {out_dir}/split_train.csv and split_val.csv")
 
     dl_tr = tio.SubjectsLoader(ds_tr,
