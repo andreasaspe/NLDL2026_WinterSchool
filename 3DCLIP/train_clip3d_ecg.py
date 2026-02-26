@@ -62,7 +62,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Working commit (aka major-violet-9), but now claude tried to fix overfit - and on full data. Let's see what happens.",
+            notes="Working commit (aka major-violet-9), but now claude tried to fix overfit - and on full data. With NaN checks removed.",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
@@ -162,24 +162,24 @@ def train():
             with autocast():
                 logits_per_image, logits_per_context = model(images, context_vectors)
 
-                # Check for NaN in logits (FP16 overflow)
-                if torch.isnan(logits_per_image).any() or torch.isnan(logits_per_context).any():
-                    nan_count += 1
-                    print(f"  ⚠ NaN in logits at epoch {epoch+1}, step {step} "
-                          f"(logit_scale={model.logit_scale.item():.3f}, "
-                          f"exp={model.logit_scale.clamp(max=4.6052).exp().item():.1f}) — skipping")
-                    continue
+                # # Check for NaN in logits (FP16 overflow)
+                # if torch.isnan(logits_per_image).any() or torch.isnan(logits_per_context).any():
+                #     nan_count += 1
+                #     print(f"  ⚠ NaN in logits at epoch {epoch+1}, step {step} "
+                #           f"(logit_scale={model.logit_scale.item():.3f}, "
+                #           f"exp={model.logit_scale.clamp(max=4.6052).exp().item():.1f}) — skipping")
+                #     continue
 
                 labels = torch.arange(images.size(0), device=device)
                 loss_img = F.cross_entropy(logits_per_image, labels, label_smoothing=label_smoothing)
                 loss_ctx = F.cross_entropy(logits_per_context, labels, label_smoothing=label_smoothing)
                 loss = (loss_img + loss_ctx) / 2.0
 
-            # Skip if loss is NaN/Inf
-            if torch.isnan(loss) or torch.isinf(loss):
-                nan_count += 1
-                print(f"  ⚠ NaN/Inf loss at epoch {epoch+1}, step {step} — skipping")
-                continue
+            # # Skip if loss is NaN/Inf
+            # if torch.isnan(loss) or torch.isinf(loss):
+            #     nan_count += 1
+            #     print(f"  ⚠ NaN/Inf loss at epoch {epoch+1}, step {step} — skipping")
+            #     continue
 
             nan_count = 0  # reset on clean step
 
@@ -189,11 +189,11 @@ def train():
             scaler.unscale_(optimizer)
             grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
-            # Skip step if gradients are still broken after clipping
-            if torch.isnan(grad_norm) or torch.isinf(grad_norm):
-                print(f"  ⚠ Inf/NaN grads at epoch {epoch+1}, step {step} — skipping step")
-                scaler.update()
-                continue
+            # # Skip step if gradients are still broken after clipping
+            # if torch.isnan(grad_norm) or torch.isinf(grad_norm):
+            #     print(f"  ⚠ Inf/NaN grads at epoch {epoch+1}, step {step} — skipping step")
+            #     scaler.update()
+            #     continue
 
             scaler.step(optimizer)
             scaler.update()
@@ -251,9 +251,9 @@ def train():
                     loss_ctx = F.cross_entropy(logits_per_context, labels)
                     loss = (loss_img + loss_ctx) / 2.0
 
-                if not (torch.isnan(loss) or torch.isinf(loss)):
-                    val_loss += loss.item()
-                    val_steps += 1
+                # if not (torch.isnan(loss) or torch.isinf(loss)):
+                val_loss += loss.item()
+                val_steps += 1
 
         avg_val_loss = val_loss / max(val_steps, 1)
         if wandb_bool:

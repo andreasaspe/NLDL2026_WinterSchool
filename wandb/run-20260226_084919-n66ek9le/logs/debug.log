@@ -1,0 +1,20 @@
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_setup.py:_flush():81] Current SDK version is 0.25.0
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_setup.py:_flush():81] Configure stats pid to 3658912
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /home/awias/Documents/code/NLDL2026_WinterSchool/wandb/run-20260226_084919-n66ek9le/logs/debug.log
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /home/awias/Documents/code/NLDL2026_WinterSchool/wandb/run-20260226_084919-n66ek9le/logs/debug-internal.log
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_init.py:init():844] calling init triggers
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'epochs': 1000, 'batch_size': 32, 'learning_rate': 5e-05, 'weight_decay': 0.01, 'warmup_epochs': 20, 'label_smoothing': 0.1, 'embed_dim': 128, 'image_resolution': 192, 'vision_layers': (3, 4, 6, 3), 'vision_width': 64, 'context_length': 36, 'transformer_width': 256, 'transformer_heads': 4, 'transformer_layers': 4, '_wandb': {}}
+2026-02-26 08:49:19,723 INFO    MainThread:3658912 [wandb_init.py:init():892] starting backend
+2026-02-26 08:49:19,947 INFO    MainThread:3658912 [wandb_init.py:init():895] sending inform_init request
+2026-02-26 08:49:19,950 INFO    MainThread:3658912 [wandb_init.py:init():903] backend started and connected
+2026-02-26 08:49:19,956 INFO    MainThread:3658912 [wandb_init.py:init():973] updated telemetry
+2026-02-26 08:49:19,959 INFO    MainThread:3658912 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-26 08:49:20,579 INFO    MainThread:3658912 [wandb_init.py:init():1042] starting run threads in backend
+2026-02-26 08:49:20,618 INFO    MainThread:3658912 [wandb_run.py:_console_start():2524] atexit reg
+2026-02-26 08:49:20,618 INFO    MainThread:3658912 [wandb_run.py:_redirect():2373] redirect: wrap_raw
+2026-02-26 08:49:20,618 INFO    MainThread:3658912 [wandb_run.py:_redirect():2442] Wrapping output streams.
+2026-02-26 08:49:20,618 INFO    MainThread:3658912 [wandb_run.py:_redirect():2465] Redirects installed.
+2026-02-26 08:49:20,620 INFO    MainThread:3658912 [wandb_init.py:init():1082] run started, returning control to user process
+2026-02-26 08:49:20,620 INFO    MainThread:3658912 [wandb_watch.py:_watch():69] Watching

@@ -1,0 +1,7 @@
+{"time":"2026-02-26T08:48:44.838873441+01:00","level":"INFO","msg":"stream: starting","core version":"0.25.0"}
+{"time":"2026-02-26T08:48:45.136048022+01:00","level":"INFO","msg":"stream: created new stream","id":"qivoxrwp"}
+{"time":"2026-02-26T08:48:45.136130797+01:00","level":"INFO","msg":"handler: started","stream_id":"qivoxrwp"}
+{"time":"2026-02-26T08:48:45.136223036+01:00","level":"INFO","msg":"stream: started","id":"qivoxrwp"}
+{"time":"2026-02-26T08:48:45.136226331+01:00","level":"INFO","msg":"writer: started","stream_id":"qivoxrwp"}
+{"time":"2026-02-26T08:48:45.136231238+01:00","level":"INFO","msg":"sender: started","stream_id":"qivoxrwp"}
+{"time":"2026-02-26T08:48:46.784906693+01:00","level":"INFO","msg":"stream: closing","id":"qivoxrwp"}

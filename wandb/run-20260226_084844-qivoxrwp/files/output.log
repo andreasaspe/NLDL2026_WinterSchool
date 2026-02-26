@@ -1,0 +1,51 @@
+Found 5059 subjects with both ECG data and mask files.
+Training set: 4047 subjects
+Found 5059 subjects with both ECG data and mask files.
+Validation set: 1012 subjects
+  ✓ Split saved to /data/awias/NLDL_Winterschool/models/magic-eon-38/split_train.csv and split_val.csv
+/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:138: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler(init_scale=2**10, growth_interval=1000)
+Epoch: 1:   0%|                                                                         | 0/126 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 286, in <module>
+    train()
+    ~~~~~^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py", line 153, in train
+    for step, batch in progress_bar:
+                       ^^^^^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+               ^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 801, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torch/utils/data/_utils/fetch.py", line 54, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/clip_dataloader.py", line 367, in __getitem__
+    return super().__getitem__(idx)
+           ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/dataset.py", line 93, in __getitem__
+    subject.load()
+    ~~~~~~~~~~~~^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/subject.py", line 380, in load
+    image.load()
+    ~~~~~~~~~~^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/image.py", line 579, in load
+    tensor, affine = self.read_and_check(paths[0])
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/image.py", line 625, in read_and_check
+    tensor, affine = self.reader(path)
+                     ~~~~~~~~~~~^^^^^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/io.py", line 35, in read_image
+    result = _read_sitk(path)
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/torchio/data/io.py", line 69, in _read_sitk
+    image = sitk.ReadImage(str(path))
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/SimpleITK/extra.py", line 384, in ReadImage
+    return reader.Execute()
+           ~~~~~~~~~~~~~~^^
+  File "/home/awias/miniconda3/envs/standard/lib/python3.14/site-packages/SimpleITK/SimpleITK.py", line 8534, in Execute
+    return _SimpleITK.ImageFileReader_Execute(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+KeyboardInterrupt
