@@ -22,8 +22,8 @@ def train():
     epochs = 1000
     batch_size = 32
     learning_rate = 5e-5           # Reduced from 1e-4
-    weight_decay = 1e-3            # Increased from 1e-5 (strong regularization)
-    warmup_epochs = 10             # LR warmup
+    weight_decay = 1e-2            # Increased from 1e-5 (strong regularization)
+    warmup_epochs = 20             # LR warmup
     label_smoothing = 0.1          # Prevents overconfident predictions
 
     # Set the device
@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Easy-rider again with all data",
+            notes="Easy-rider again with all data - EVEN STRONGER REGULARIZATION and LONGER WARMUP",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
