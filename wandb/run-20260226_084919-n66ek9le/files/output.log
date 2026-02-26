@@ -7,4 +7,4 @@ Validation set: 1012 subjects
   scaler = GradScaler(init_scale=2**10, growth_interval=1000)
 Epoch: 1:   0%|                                                                         | 0/126 [00:00<?, ?it/s]/home/awias/Documents/code/NLDL2026_WinterSchool/3DCLIP/train_clip3d_ecg.py:164: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   with autocast():
-Epoch: 1:  82%|██████████████████████████████▏      | 103/126 [02:37<00:35,  1.54s/it, loss=3.5578, lr=2.50e-06]
+Epoch: 1:  92%|██████████████████████████████████   | 116/126 [02:58<00:17,  1.70s/it, loss=3.5570, lr=2.50e-06]
