@@ -29,7 +29,7 @@ def train():
     # Set the device
     if torch.cuda.is_available():
         # Select the second GPU (index 1)
-        device = torch.device("cuda:0" if torch.cuda.device_count() > 1 else "cuda:0")
+        device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
     else:
         device = torch.device("cpu")
 
@@ -54,7 +54,7 @@ def train():
         wandb.init(
             project="CLIP3D-ECG",
             entity="andreasaspe",
-            notes="Easy-rider again with all data - EVEN STRONGER REGULARIZATION and LONGER WARMUP",
+            notes="Easy-rider again with FEWER data - EVEN STRONGER REGULARIZATION and LONGER WARMUP. So exactly the same as dry-glitter-39 with fewer data.",
             config={
                 "epochs": epochs,
                 "batch_size": batch_size,
@@ -94,13 +94,13 @@ def train():
     optimizer_chkpt = None
 
     # --- Datasets (using split column from CSV) ---
-    # ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
-    # ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
+    ds_tr = clip3d_ecg_dataset(data_dir, csv_path, augment=True,  split='train')
+    ds_val = clip3d_ecg_dataset(data_dir, csv_path, augment=False, split='val')
 
     # No val split split
     # --- 
-    ds_tr = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=True,  train=True)
-    ds_val = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=False, train=False)
+    # ds_tr = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=True,  train=True)
+    # ds_val = clip3d_ecg_dataset_nosplit(data_dir, csv_path, augment=False, train=False)
 
     # Save the split to disk so it's fully reproducible
     ds_tr.split_df.to_csv(os.path.join(out_dir, 'split_train.csv'), index=False)
