@@ -235,7 +235,7 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
 def main():
     # ======================== Configuration ========================
 
-    checkpoint_folder_name = "easy-river-18"  # Update this to your actual folder name
+    checkpoint_folder_name = 'glorious-snowball-42' #'major-violet-9' #"easy-river-18"  # Update this to your actual folder name
     
     # Paths
     checkpoint_path = f"/data/awias/NLDL_Winterschool/models/{checkpoint_folder_name}/best_clip3d_ecg.pth"  # Update this!
