@@ -75,9 +75,9 @@ def extract_embeddings(model, dataloader, device='cuda', compute_volumes=True):
             eat_embeddings.append(eat_emb.cpu().numpy())
             ecg_embeddings.append(ecg_emb.cpu().numpy())
             
-            # Compute EAT volumes (voxel count, can be converted to mm³ if spacing known)
+            # Compute EAT volumes in mL (each voxel = 1mm³, 1mL = 1000mm³)
             if compute_volumes:
-                volumes = (images > 0).sum(dim=(1, 2, 3, 4)).cpu().numpy()
+                volumes = (images > 0).sum(dim=(1, 2, 3, 4)).cpu().numpy() / 1000.0
                 eat_volumes.append(volumes)
     
     eat_embeddings = np.vstack(eat_embeddings)
@@ -87,7 +87,7 @@ def extract_embeddings(model, dataloader, device='cuda', compute_volumes=True):
         eat_volumes = np.concatenate(eat_volumes)
         print(f"✓ Extracted {len(eat_embeddings)} embeddings and volumes")
         print(f"  EAT shape: {eat_embeddings.shape}, ECG shape: {ecg_embeddings.shape}")
-        print(f"  EAT volume range: {eat_volumes.min():.0f} - {eat_volumes.max():.0f} voxels")
+        print(f"  EAT volume range: {eat_volumes.min():.1f} - {eat_volumes.max():.1f} mL")
         return eat_embeddings, ecg_embeddings, eat_volumes
     else:
         print(f"✓ Extracted {len(eat_embeddings)} embeddings")
@@ -119,14 +119,14 @@ def reduce_dimensions(embeddings, method='umap', n_components=2, random_state=42
 
 
 def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 8),
-                        save_path=None, continuous=True):
+                        save_path=None, continuous=True, show_title=True):
     """Plot 2D scatter of embeddings colored by labels."""
     fig, ax = plt.subplots(figsize=figsize)
     
     if continuous:
         scatter = ax.scatter(reduced_emb[:, 0], reduced_emb[:, 1], 
                            c=labels, cmap=cmap, s=20, alpha=0.7)
-        plt.colorbar(scatter, ax=ax, label=title)
+        plt.colorbar(scatter, ax=ax) # label=title
     else:
         unique_labels = np.unique(labels)
         for label in unique_labels:
@@ -137,7 +137,8 @@ def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 
     
     ax.set_xlabel('Component 1')
     ax.set_ylabel('Component 2')
-    ax.set_title(title)
+    if show_title:
+        ax.set_title(title)
     ax.grid(alpha=0.3)
     
     if save_path:
@@ -149,7 +150,7 @@ def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 
 
 
 def plot_alignment(eat_reduced, ecg_reduced, cosine_scores=None, 
-                   title="EAT-ECG Alignment", save_path=None, n_samples=100):
+                   title="EAT-ECG Alignment", save_path=None, n_samples=100, show_title=True):
     """Plot paired embeddings with lines connecting EAT and ECG."""
     fig, ax = plt.subplots(figsize=(12, 10))
     
@@ -181,7 +182,8 @@ def plot_alignment(eat_reduced, ecg_reduced, cosine_scores=None,
     
     ax.set_xlabel('Component 1')
     ax.set_ylabel('Component 2')
-    ax.set_title(title)
+    if show_title:
+        ax.set_title(title)
     ax.legend()
     ax.grid(alpha=0.3)
     
@@ -194,7 +196,7 @@ def plot_alignment(eat_reduced, ecg_reduced, cosine_scores=None,
 
 
 def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings, 
-                                   max_samples=100, save_path=None):
+                                   max_samples=100, save_path=None, show_title=True):
     """Plot cosine similarity heatmap between EAT and ECG embeddings."""
     # Sample for visibility
     if len(eat_embeddings) > max_samples:
@@ -207,7 +209,7 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
     
     # Compute cosine similarity matrix
     similarity_matrix = eat_sample @ ecg_sample.T
-    
+
     # Plot heatmap
     fig, ax = plt.subplots(figsize=(12, 10))
     sns.heatmap(similarity_matrix, cmap='RdYlGn', center=0, 
@@ -217,7 +219,8 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
     
     ax.set_xlabel('ECG Embeddings')
     ax.set_ylabel('EAT Embeddings')
-    ax.set_title(f'Cross-Modal Cosine Similarity Matrix\n({len(eat_sample)} samples)')
+    if show_title:
+        ax.set_title(f'Cross-Modal Cosine Similarity Matrix\n({len(eat_sample)} samples)')
     
     # Add diagonal line
     ax.plot([0, len(eat_sample)], [0, len(eat_sample)], 
@@ -248,6 +251,7 @@ def main():
     batch_size = 16
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     reduction_method = 'tsne'  # 'pca', 'tsne', or 'umap'
+    show_title = False  # Set to False to hide plot titles
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -330,24 +334,30 @@ def main():
         plot_embeddings_2d(eat_reduced, eat_volumes,
                           f"EAT Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
-                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_volume.png'))
+                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_volume.png'),
+                          show_title=show_title)
     
     if 'clin_sex' in df.columns:
-        plot_embeddings_2d(eat_reduced, df['clin_sex'].values, 
+        sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
+        plot_embeddings_2d(eat_reduced, sex_labels, 
                           f"EAT Embeddings - Sex ({reduction_method.upper()})",
                           cmap='coolwarm', continuous=False,
-                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_sex.png'))
+                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_sex.png'),
+                          show_title=show_title)
     
     if 'clin_weight' in df.columns:
         plot_embeddings_2d(eat_reduced, df['clin_weight'].values,
                           f"EAT Embeddings - Weight ({reduction_method.upper()})",
-                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_weight.png'))
+                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_weight.png'),
+                          show_title=show_title)
     
     if 'low_voltage' in df.columns:
-        plot_embeddings_2d(eat_reduced, df['low_voltage'].astype(int).values,
+        lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
+        plot_embeddings_2d(eat_reduced, lv_labels,
                           f"EAT Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
-                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_low_voltage.png'))
+                          save_path=os.path.join(output_dir, f'eat_{reduction_method}_low_voltage.png'),
+                          show_title=show_title)
     
     # 2. ECG embeddings colored by all variables
     
@@ -356,30 +366,37 @@ def main():
         plot_embeddings_2d(ecg_reduced, eat_volumes,
                           f"ECG Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
-                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_volume.png'))
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_volume.png'),
+                          show_title=show_title)
     
     if 'clin_sex' in df.columns:
-        plot_embeddings_2d(ecg_reduced, df['clin_sex'].values,
+        sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
+        plot_embeddings_2d(ecg_reduced, sex_labels,
                           f"ECG Embeddings - Sex ({reduction_method.upper()})",
                           cmap='coolwarm', continuous=False,
-                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_sex.png'))
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_sex.png'),
+                          show_title=show_title)
     
     if 'clin_weight' in df.columns:
         plot_embeddings_2d(ecg_reduced, df['clin_weight'].values,
                           f"ECG Embeddings - Weight ({reduction_method.upper()})",
-                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_weight.png'))
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_weight.png'),
+                          show_title=show_title)
     
     if 'low_voltage' in df.columns:
-        plot_embeddings_2d(ecg_reduced, df['low_voltage'].astype(int).values,
+        lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
+        plot_embeddings_2d(ecg_reduced, lv_labels,
                           f"ECG Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
-                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_low_voltage.png'))
+                          save_path=os.path.join(output_dir, f'ecg_{reduction_method}_low_voltage.png'),
+                          show_title=show_title)
     
     # Alignment score
     plot_embeddings_2d(ecg_reduced, cosine_scores,
                       f"ECG Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
-                      save_path=os.path.join(output_dir, f'ecg_{reduction_method}_alignment.png'))
+                      save_path=os.path.join(output_dir, f'ecg_{reduction_method}_alignment.png'),
+                      show_title=show_title)
     
     # 3. Combined embeddings colored by all variables
     
@@ -388,41 +405,50 @@ def main():
         plot_embeddings_2d(combined_reduced, eat_volumes,
                           f"Combined Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
-                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_volume.png'))
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_volume.png'),
+                          show_title=show_title)
     
     if 'clin_sex' in df.columns:
-        plot_embeddings_2d(combined_reduced, df['clin_sex'].values,
+        sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
+        plot_embeddings_2d(combined_reduced, sex_labels,
                           f"Combined Embeddings - Sex ({reduction_method.upper()})",
                           cmap='coolwarm', continuous=False,
-                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_sex.png'))
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_sex.png'),
+                          show_title=show_title)
     
     if 'clin_weight' in df.columns:
         plot_embeddings_2d(combined_reduced, df['clin_weight'].values,
                           f"Combined Embeddings - Weight ({reduction_method.upper()})",
-                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_weight.png'))
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_weight.png'),
+                          show_title=show_title)
     
     if 'low_voltage' in df.columns:
-        plot_embeddings_2d(combined_reduced, df['low_voltage'].astype(int).values,
+        lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
+        plot_embeddings_2d(combined_reduced, lv_labels,
                           f"Combined Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
-                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_low_voltage.png'))
+                          save_path=os.path.join(output_dir, f'combined_{reduction_method}_low_voltage.png'),
+                          show_title=show_title)
     
     # Alignment score
     plot_embeddings_2d(combined_reduced, cosine_scores,
                       f"Combined Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
-                      save_path=os.path.join(output_dir, f'combined_{reduction_method}_alignment.png'))
+                      save_path=os.path.join(output_dir, f'combined_{reduction_method}_alignment.png'),
+                      show_title=show_title)
     
     # 4. Multi-modal alignment visualization
     plot_alignment(eat_reduced, ecg_reduced, cosine_scores,
                   title=f"EAT-ECG Alignment ({reduction_method.upper()})",
                   save_path=os.path.join(output_dir, f'alignment_{reduction_method}.png'),
-                  n_samples=min(200, len(eat_reduced)))
+                  n_samples=min(200, len(eat_reduced)),
+                  show_title=show_title)
     
     # 5. Cosine similarity heatmap
     plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
                                    max_samples=100,
-                                   save_path=os.path.join(output_dir, 'cosine_similarity_heatmap.png'))
+                                   save_path=os.path.join(output_dir, 'cosine_similarity_heatmap.png'),
+                                   show_title=show_title)
     
     # ======================== Statistics ========================
     
@@ -433,10 +459,10 @@ def main():
     # EAT volume statistics
     if eat_volumes is not None:
         print(f"EAT Volume Statistics:")
-        print(f"  Mean: {eat_volumes.mean():.0f} voxels")
-        print(f"  Median: {np.median(eat_volumes):.0f} voxels")
-        print(f"  Std: {eat_volumes.std():.0f} voxels")
-        print(f"  Range: {eat_volumes.min():.0f} - {eat_volumes.max():.0f} voxels")
+        print(f"  Mean: {eat_volumes.mean():.1f} mL")
+        print(f"  Median: {np.median(eat_volumes):.1f} mL")
+        print(f"  Std: {eat_volumes.std():.1f} mL")
+        print(f"  Range: {eat_volumes.min():.1f} - {eat_volumes.max():.1f} mL")
         
         # Correlation with alignment
         from scipy.stats import pearsonr, spearmanr
