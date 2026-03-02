@@ -119,14 +119,14 @@ def reduce_dimensions(embeddings, method='umap', n_components=2, random_state=42
 
 
 def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 8),
-                        save_path=None, continuous=True, show_title=True):
+                        save_path=None, continuous=True, show_title=True, colorbar_label=None):
     """Plot 2D scatter of embeddings colored by labels."""
     fig, ax = plt.subplots(figsize=figsize)
     
     if continuous:
         scatter = ax.scatter(reduced_emb[:, 0], reduced_emb[:, 1], 
                            c=labels, cmap=cmap, s=20, alpha=0.7)
-        plt.colorbar(scatter, ax=ax) # label=title
+        plt.colorbar(scatter, ax=ax, label=colorbar_label)
     else:
         unique_labels = np.unique(labels)
         for label in unique_labels:
@@ -250,7 +250,7 @@ def main():
     split = 'test'  # 'train', 'val', or 'test'
     batch_size = 16
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    reduction_method = 'tsne'  # 'pca', 'tsne', or 'umap'
+    reduction_method = 'pca'  # 'pca', 'tsne', or 'umap'
     show_title = False  # Set to False to hide plot titles
     
     os.makedirs(output_dir, exist_ok=True)
@@ -335,7 +335,7 @@ def main():
                           f"EAT Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
                           save_path=os.path.join(output_dir, f'eat_{reduction_method}_volume.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Volume [mL]')
     
     if 'clin_sex' in df.columns:
         sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
@@ -349,7 +349,7 @@ def main():
         plot_embeddings_2d(eat_reduced, df['clin_weight'].values,
                           f"EAT Embeddings - Weight ({reduction_method.upper()})",
                           save_path=os.path.join(output_dir, f'eat_{reduction_method}_weight.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Weight [kg]')
     
     if 'low_voltage' in df.columns:
         lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
@@ -367,7 +367,7 @@ def main():
                           f"ECG Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
                           save_path=os.path.join(output_dir, f'ecg_{reduction_method}_volume.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Volume [mL]')
     
     if 'clin_sex' in df.columns:
         sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
@@ -381,7 +381,7 @@ def main():
         plot_embeddings_2d(ecg_reduced, df['clin_weight'].values,
                           f"ECG Embeddings - Weight ({reduction_method.upper()})",
                           save_path=os.path.join(output_dir, f'ecg_{reduction_method}_weight.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Weight [kg]')
     
     if 'low_voltage' in df.columns:
         lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
@@ -396,7 +396,7 @@ def main():
                       f"ECG Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
                       save_path=os.path.join(output_dir, f'ecg_{reduction_method}_alignment.png'),
-                      show_title=show_title)
+                      show_title=show_title, colorbar_label='Cosine Similarity')
     
     # 3. Combined embeddings colored by all variables
     
@@ -406,7 +406,7 @@ def main():
                           f"Combined Embeddings - EAT Volume ({reduction_method.upper()})",
                           cmap='viridis',
                           save_path=os.path.join(output_dir, f'combined_{reduction_method}_volume.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Volume [mL]')
     
     if 'clin_sex' in df.columns:
         sex_labels = np.where(df['clin_sex'].values == 1, 'Men', 'Women')
@@ -420,10 +420,10 @@ def main():
         plot_embeddings_2d(combined_reduced, df['clin_weight'].values,
                           f"Combined Embeddings - Weight ({reduction_method.upper()})",
                           save_path=os.path.join(output_dir, f'combined_{reduction_method}_weight.png'),
-                          show_title=show_title)
+                          show_title=show_title, colorbar_label='Weight [kg]')
     
     if 'low_voltage' in df.columns:
-        lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
+        lv_labels = np.where(df['low_voltage'].values == 1, 'Normal', 'Low-voltage')
         plot_embeddings_2d(combined_reduced, lv_labels,
                           f"Combined Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
@@ -435,7 +435,7 @@ def main():
                       f"Combined Embeddings - Alignment Score ({reduction_method.upper()})",
                       cmap='RdYlGn',
                       save_path=os.path.join(output_dir, f'combined_{reduction_method}_alignment.png'),
-                      show_title=show_title)
+                      show_title=show_title, colorbar_label='Cosine Similarity')
     
     # 4. Multi-modal alignment visualization
     plot_alignment(eat_reduced, ecg_reduced, cosine_scores,
