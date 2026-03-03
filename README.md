@@ -13,5 +13,7 @@ https://github.com/heeellomyfriend/ecg-ct/
 
 The above link is essentially the same as the easy-rider branch, but with a readme-file and requirements-file. I just my standard env as env for the project. I copied for the files from the easy-rider branch in this github to this anonomys github repo.
 
+The last branch working_commit was the code at the point of the run major-violet-9 using all the data. But, went away from it since it turned out I for some strange reason couldn't reproduce the low loss.
+
 
 I ran everything on GPU-9.
