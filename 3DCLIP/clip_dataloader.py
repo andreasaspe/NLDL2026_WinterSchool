@@ -2,8 +2,6 @@ import torch
 import numpy as np
 import os
 
-import torch.utils 
-import json
 import SimpleITK as sitk
 import torchio as tio
 

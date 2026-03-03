@@ -13,8 +13,6 @@ import os
 from tqdm import tqdm
 import pandas as pd
 
-import tools
-
 def predict_with_nn_unet_on_filelist():
     model_folder = "/data/awias/nnUNet/nnUNet_results/Dataset001_Periseg/nnUNetTrainerNoMirroring__nnUNetResEncUNetLPlans__3d_fullres/"
     input_data_folder = "/storage/Data/DTU-CGPS-1/NIFTI/"
