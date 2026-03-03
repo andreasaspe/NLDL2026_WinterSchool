@@ -499,7 +499,7 @@ def main():
 
     
     # Save embeddings for further analysis
-    save_embeddings_path = os.path.join(output_dir, f'{split}_embeddings.npz')
+    save_embeddings_path = os.path.join(output_dir, f'{split}_embeddings_{reduction_method}.npz')
     np.savez(save_embeddings_path,
              eat_embeddings=eat_embeddings,
              ecg_embeddings=ecg_embeddings,

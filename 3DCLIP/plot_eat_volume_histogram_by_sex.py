@@ -51,8 +51,8 @@ fig, ax = plt.subplots(figsize=(8, 5))
 
 bins = np.linspace(min(eat_volumes.min(), 0), eat_volumes.max(), 40)
 
-ax.hist(men_volumes, bins=bins, alpha=0.6, label=f'Men (n={len(men_volumes)})', color='#2196F3', edgecolor='white', linewidth=0.5)
-ax.hist(women_volumes, bins=bins, alpha=0.6, label=f'Women (n={len(women_volumes)})', color='#F44336', edgecolor='white', linewidth=0.5)
+ax.hist(men_volumes, bins=bins, alpha=0.6, label=f'Men (n={len(men_volumes)})', color='#1f77b4', edgecolor='white', linewidth=0.5)
+ax.hist(women_volumes, bins=bins, alpha=0.6, label=f'Women (n={len(women_volumes)})', color='#ff7f0e', edgecolor='white', linewidth=0.5)
 
 ax.set_xlabel('EAT Volume [mL]')
 ax.set_ylabel('Count')
