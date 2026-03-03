@@ -19,7 +19,7 @@ def train():
     # Training settings
     save_every = 20
     wandb_bool = True
-    epochs = 1000
+    epochs = 200
     batch_size = 32
     learning_rate = 5e-5           # Reduced from 1e-4
     weight_decay = 1e-2            # Increased from 1e-5 (strong regularization)

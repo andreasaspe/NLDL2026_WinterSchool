@@ -292,7 +292,7 @@ def main():
     model = load_model(checkpoint_path, device)
     
     # After loading model, before extracting embeddings:
-    print(f"\n🔍 Model Diagnostics:")
+    print(f"\n  Model Diagnostics:")
     print(f"  Logit scale: {model.logit_scale.item():.3f} (exp: {model.logit_scale.exp().item():.1f})")
     print(f"  Expected range: 2.7 - 4.6 (corresponding to exp(2.7)=15 to exp(4.6)=100)")
 
@@ -306,7 +306,7 @@ def main():
     
     # Compute alignment metrics
     cosine_scores = (eat_embeddings * ecg_embeddings).sum(axis=1)
-    print(f"\n✓ Alignment metrics:")
+    print(f"\n  Alignment metrics:")
     print(f"  Mean cosine similarity: {cosine_scores.mean():.3f} ± {cosine_scores.std():.3f}")
     print(f"  Min: {cosine_scores.min():.3f}, Max: {cosine_scores.max():.3f}")
     
