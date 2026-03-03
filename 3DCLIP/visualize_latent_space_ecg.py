@@ -119,7 +119,8 @@ def reduce_dimensions(embeddings, method='umap', n_components=2, random_state=42
 
 
 def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 8),
-                        save_path=None, continuous=True, show_title=True, colorbar_label=None):
+                        save_path=None, continuous=True, show_title=True, colorbar_label=None,
+                        label_order=None):
     """Plot 2D scatter of embeddings colored by labels."""
     fig, ax = plt.subplots(figsize=figsize)
     
@@ -128,7 +129,7 @@ def plot_embeddings_2d(reduced_emb, labels, title, cmap='viridis', figsize=(10, 
                            c=labels, cmap=cmap, s=20, alpha=0.7)
         plt.colorbar(scatter, ax=ax, label=colorbar_label)
     else:
-        unique_labels = np.unique(labels)
+        unique_labels = label_order if label_order is not None else np.unique(labels)
         for label in unique_labels:
             mask = labels == label
             ax.scatter(reduced_emb[mask, 0], reduced_emb[mask, 1],
@@ -210,6 +211,10 @@ def plot_cosine_similarity_heatmap(eat_embeddings, ecg_embeddings,
     # Compute cosine similarity matrix
     similarity_matrix = eat_sample @ ecg_sample.T
 
+    # Max absolute value
+    max_abs = np.abs(similarity_matrix).max()
+    print(max_abs)
+
     # Plot heatmap
     fig, ax = plt.subplots(figsize=(12, 10))
     sns.heatmap(similarity_matrix, cmap='RdYlGn', center=0, 
@@ -250,7 +255,7 @@ def main():
     split = 'test'  # 'train', 'val', or 'test'
     batch_size = 16
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    reduction_method = 'pca'  # 'pca', 'tsne', or 'umap'
+    reduction_method = 'tsne'  # 'pca', 'tsne', or 'umap'
     show_title = False  # Set to False to hide plot titles
     
     os.makedirs(output_dir, exist_ok=True)
@@ -321,6 +326,13 @@ def main():
     combined_embeddings = np.concatenate([eat_embeddings, ecg_embeddings], axis=1)
     combined_reduced = reduce_dimensions(combined_embeddings, method=reduction_method, n_components=2)
     
+    # Joint reduction (EAT + ECG in shared space) for alignment plot
+    n_samples = len(eat_embeddings)
+    joint_embeddings = np.vstack([eat_embeddings, ecg_embeddings])  # (2N, 128)
+    joint_reduced = reduce_dimensions(joint_embeddings, method=reduction_method, n_components=2)
+    eat_reduced_joint = joint_reduced[:n_samples]
+    ecg_reduced_joint = joint_reduced[n_samples:]
+    
     # ======================== Visualizations ========================
     
     print(f"\n{'='*60}")
@@ -357,7 +369,7 @@ def main():
                           f"EAT Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
                           save_path=os.path.join(output_dir, f'eat_{reduction_method}_low_voltage.png'),
-                          show_title=show_title)
+                          show_title=show_title, label_order=['Normal', 'Low-voltage'])
     
     # 2. ECG embeddings colored by all variables
     
@@ -389,7 +401,7 @@ def main():
                           f"ECG Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
                           save_path=os.path.join(output_dir, f'ecg_{reduction_method}_low_voltage.png'),
-                          show_title=show_title)
+                          show_title=show_title, label_order=['Normal', 'Low-voltage'])
     
     # Alignment score
     plot_embeddings_2d(ecg_reduced, cosine_scores,
@@ -423,12 +435,12 @@ def main():
                           show_title=show_title, colorbar_label='Weight [kg]')
     
     if 'low_voltage' in df.columns:
-        lv_labels = np.where(df['low_voltage'].values == 1, 'Normal', 'Low-voltage')
+        lv_labels = np.where(df['low_voltage'].values == 1, 'Low-voltage', 'Normal')
         plot_embeddings_2d(combined_reduced, lv_labels,
                           f"Combined Embeddings - Low Voltage ECG ({reduction_method.upper()})",
                           cmap='RdYlGn', continuous=False,
                           save_path=os.path.join(output_dir, f'combined_{reduction_method}_low_voltage.png'),
-                          show_title=show_title)
+                          show_title=show_title, label_order=['Normal', 'Low-voltage'])
     
     # Alignment score
     plot_embeddings_2d(combined_reduced, cosine_scores,
@@ -437,11 +449,11 @@ def main():
                       save_path=os.path.join(output_dir, f'combined_{reduction_method}_alignment.png'),
                       show_title=show_title, colorbar_label='Cosine Similarity')
     
-    # 4. Multi-modal alignment visualization
-    plot_alignment(eat_reduced, ecg_reduced, cosine_scores,
+    # 4. Multi-modal alignment visualization (joint reduction so both modalities share the same 2D space)
+    plot_alignment(eat_reduced_joint, ecg_reduced_joint, cosine_scores,
                   title=f"EAT-ECG Alignment ({reduction_method.upper()})",
                   save_path=os.path.join(output_dir, f'alignment_{reduction_method}.png'),
-                  n_samples=min(200, len(eat_reduced)),
+                  n_samples=min(200, len(eat_reduced_joint)),
                   show_title=show_title)
     
     # 5. Cosine similarity heatmap
