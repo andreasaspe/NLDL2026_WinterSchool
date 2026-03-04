@@ -15,8 +15,8 @@ import pandas as pd
 
 def predict_with_nn_unet_on_filelist():
     model_folder = "/data/awias/nnUNet/nnUNet_results/Dataset001_Periseg/nnUNetTrainerNoMirroring__nnUNetResEncUNetLPlans__3d_fullres/"
-    input_data_folder = "/storage/Data/DTU-CGPS-1/NIFTI/"
-    output_folder = "/storage/awias/NLDL_Winterschool/predictions_periseg"
+    input_data_folder = "/storage/awias/NLDL_Winterschool/NIFTI_reoriented"
+    output_folder = "/storage/awias/NLDL_Winterschool/predictions_periseg_reoriented"
     EKG_path = "/storage/awias/NLDL_Winterschool/CT_EKG_combined_pseudonymized_with_best_phase_scan.csv"
 
     data_df = pd.read_csv(EKG_path)
@@ -31,7 +31,7 @@ def predict_with_nn_unet_on_filelist():
     for series in all_series:
         out_file = os.path.join(output_folder, series + "_pred.nii.gz")
         if not os.path.exists(out_file):
-            in_files.append([os.path.join(input_data_folder, series + ".nii.gz")])
+            in_files.append([os.path.join(input_data_folder, series + "_img.nii.gz")])
             out_files.append(out_file)
 
     print(f"Initializing class")
